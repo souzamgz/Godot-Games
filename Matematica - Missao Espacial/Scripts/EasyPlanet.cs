@@ -3,7 +3,8 @@ using System;
 
 public abstract partial class EasyPlanet : Control
 {
-    protected Random random = new Random();
+    protected Random random =
+        new Random();
 
     protected GameUI ui;
 
@@ -17,15 +18,24 @@ public abstract partial class EasyPlanet : Control
 
     public override void _Ready()
     {
-        ui = new GameUI();
+        ui =
+            new GameUI();
 
-        AddChild(ui);
+        AddChild(
+            ui
+        );
 
-        ui.RestartRequested += RestartGame;
-        ui.ExitRequested += ExitToMenu;
+        ui.RestartRequested +=
+            RestartGame;
 
-        ui.DefeatRestartRequested += RestartGame;
-        ui.DefeatExitRequested += ExitToMenu;
+        ui.ExitRequested +=
+            ExitToMenu;
+
+        ui.DefeatRestartRequested +=
+            RestartGame;
+
+        ui.DefeatExitRequested +=
+            ExitToMenu;
 
         StartGame();
     }
@@ -135,7 +145,9 @@ public abstract partial class EasyPlanet : Control
         )
         {
             int j =
-                random.Next(i + 1);
+                random.Next(
+                    i + 1
+                );
 
             int temp =
                 answers[i];
@@ -204,24 +216,49 @@ public abstract partial class EasyPlanet : Control
         questionAnswered =
             true;
 
-        ui.EnableRestartButton();
-
         int selectedAnswer =
             int.Parse(
                 button.Text
             );
 
-        bool correct =
+        if (
             selectedAnswer ==
-            correctAnswer;
-
-        if (correct)
+            correctAnswer
+        )
         {
-            HandleCorrectAnswer();
+            meteorHealth -=
+                GameUI.EasyDamagePerCorrectAnswer;
+
+            if (
+                meteorHealth < 0
+            )
+            {
+                meteorHealth =
+                    0;
+            }
+
+            ui.MessageLabel.Text =
+                "🎯 Acertou!";
+
+            ui.UpdateMeteorHealth(
+                meteorHealth
+            );
         }
         else
         {
-            HandleWrongAnswer();
+            lives--;
+
+            ui.MessageLabel.Text =
+                "💥 Ops! Tente novamente.";
+
+            ui.UpdateLives(
+                lives
+            );
+
+            // Erro NÃO causa dano.
+            ui.UpdateMeteorHealth(
+                meteorHealth
+            );
         }
 
         await ToSignal(
@@ -229,76 +266,33 @@ public abstract partial class EasyPlanet : Control
             SceneTreeTimer.SignalName.Timeout
         );
 
-        if (!correct && lives <= 0)
+        if (
+            lives <= 0
+        )
         {
             Defeat();
 
             return;
         }
 
-        if (meteorHealth <= 0)
+        if (
+            meteorHealth <= 0
+        )
         {
-            await HandleMeteorDestroyed();
+            ui.MessageLabel.Text =
+                "💥 Meteoro destruído!";
+
+            await ToSignal(
+                GetTree().CreateTimer(0.8),
+                SceneTreeTimer.SignalName.Timeout
+            );
+
+            StartGame();
 
             return;
         }
 
         StartQuestion();
-    }
-
-    private void HandleCorrectAnswer()
-    {
-        meteorHealth -=
-            GameUI.EasyDamagePerCorrectAnswer;
-
-        if (
-            meteorHealth < 0
-        )
-        {
-            meteorHealth =
-                0;
-        }
-
-        ui.MessageLabel.Text =
-            "🎯 Acertou!";
-
-        ui.UpdateMeteorHealth(
-            meteorHealth
-        );
-    }
-
-    private void HandleWrongAnswer()
-    {
-        lives--;
-
-        ui.MessageLabel.Text =
-            "💥 Ops! Tente novamente.";
-
-        ui.UpdateLives(
-            lives
-        );
-
-        // Erros NÃO causam dano ao meteoro.
-        ui.UpdateMeteorHealth(
-            meteorHealth
-        );
-    }
-
-    private async System.Threading.Tasks.Task HandleMeteorDestroyed()
-    {
-        ui.MessageLabel.Text =
-            "💥 Meteoro destruído!";
-
-        ui.UpdateMeteorHealth(
-            0
-        );
-
-        await ToSignal(
-            GetTree().CreateTimer(0.8),
-            SceneTreeTimer.SignalName.Timeout
-        );
-
-        StartGame();
     }
 
     private void Defeat()
@@ -319,8 +313,30 @@ public abstract partial class EasyPlanet : Control
 
     private void ExitToMenu()
     {
-        GetTree().ChangeSceneToFile(
-            "res://Cenas/Main.tscn"
+        string[] possiblePaths =
+        {
+            "res://Cenas/Main.tscn",
+            "res://Main.tscn"
+        };
+
+        foreach (
+            string path in possiblePaths
+        )
+        {
+            if (
+                ResourceLoader.Exists(path)
+            )
+            {
+                GetTree().ChangeSceneToFile(
+                    path
+                );
+
+                return;
+            }
+        }
+
+        GD.PrintErr(
+            "Não foi possível encontrar Main.tscn."
         );
     }
 }

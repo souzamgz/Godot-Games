@@ -4,35 +4,24 @@ using System;
 public partial class GameUI : Control
 {
     public const int EasyMeteorMaxHealth = 30;
-
     public const int EasyDamagePerCorrectAnswer = 10;
-
     public const int MaxLives = 3;
 
     public Label OperationLabel { get; private set; }
-
     public Label MeteorHealthLabel { get; private set; }
-
     public Label LivesLabel { get; private set; }
-
     public Label MessageLabel { get; private set; }
 
     public Button AnswerButton1 { get; private set; }
-
     public Button AnswerButton2 { get; private set; }
-
     public Button AnswerButton3 { get; private set; }
 
     public Button RestartButton { get; private set; }
-
     public Button ExitButton { get; private set; }
 
     public event Action RestartRequested;
-
     public event Action ExitRequested;
-
     public event Action DefeatRestartRequested;
-
     public event Action DefeatExitRequested;
 
     private Panel defeatPanel;
@@ -45,45 +34,23 @@ public partial class GameUI : Control
     private void CreateInterface()
     {
         CreateTopButtons();
-
         CreateLives();
-
         CreateQuestionPanel();
-
         CreateMeteor();
-
         CreateAnswers();
-
         CreateMessage();
-
         CreateDefeatPanel();
     }
 
     private void CreateTopButtons()
     {
         RestartButton =
-            new Button();
-
-        RestartButton.Text =
-            "REINICIAR";
-
-        RestartButton.Position =
-            new Vector2(900, 25);
-
-        RestartButton.Size =
-            new Vector2(135, 45);
-
-        RestartButton.AddThemeFontSizeOverride(
-            "font_size",
-            16
-        );
-
-        RestartButton.Modulate =
-            new Color(
-                1f,
-                1f,
-                1f,
-                0.4f
+            CreateActionButton(
+                "REINICIAR",
+                new Vector2(900, 25),
+                new Vector2(135, 45),
+                new Color("#27346B"),
+                new Color("#657BD2")
             );
 
         AddChild(
@@ -94,21 +61,13 @@ public partial class GameUI : Control
             () => RestartRequested?.Invoke();
 
         ExitButton =
-            new Button();
-
-        ExitButton.Text =
-            "SAIR";
-
-        ExitButton.Position =
-            new Vector2(1045, 25);
-
-        ExitButton.Size =
-            new Vector2(110, 45);
-
-        ExitButton.AddThemeFontSizeOverride(
-            "font_size",
-            16
-        );
+            CreateActionButton(
+                "SAIR",
+                new Vector2(1045, 25),
+                new Vector2(110, 45),
+                new Color("#7A3151"),
+                new Color("#A9446B")
+            );
 
         AddChild(
             ExitButton
@@ -118,26 +77,38 @@ public partial class GameUI : Control
             () => ExitRequested?.Invoke();
     }
 
-    public void EnableRestartButton()
+    private Button CreateActionButton(
+        string text,
+        Vector2 position,
+        Vector2 size,
+        Color backgroundColor,
+        Color borderColor
+    )
     {
-        RestartButton.Modulate =
-            new Color(
-                1f,
-                1f,
-                1f,
-                1f
-            );
-    }
+        Button button =
+            new Button();
 
-    public void DisableRestartButtonVisual()
-    {
-        RestartButton.Modulate =
-            new Color(
-                1f,
-                1f,
-                1f,
-                0.4f
-            );
+        button.Text =
+            text;
+
+        button.Position =
+            position;
+
+        button.Size =
+            size;
+
+        button.AddThemeFontSizeOverride(
+            "font_size",
+            16
+        );
+
+        Style.ApplyActionButton(
+            button,
+            backgroundColor,
+            borderColor
+        );
+
+        return button;
     }
 
     private void CreateLives()
@@ -166,30 +137,24 @@ public partial class GameUI : Control
 
     private void CreateQuestionPanel()
     {
-        ColorRect background =
-            new ColorRect();
+        Panel panel =
+            new Panel();
 
-        background.Position =
+        panel.Position =
             new Vector2(350, 145);
 
-        background.Size =
+        panel.Size =
             new Vector2(500, 125);
 
-        background.Color =
-            new Color("#151F4A");
+        panel.Modulate =
+            new Color("#D8E0FF");
 
         AddChild(
-            background
+            panel
         );
 
         OperationLabel =
             new Label();
-
-        OperationLabel.Position =
-            Vector2.Zero;
-
-        OperationLabel.Size =
-            new Vector2(500, 125);
 
         OperationLabel.HorizontalAlignment =
             HorizontalAlignment.Center;
@@ -197,12 +162,16 @@ public partial class GameUI : Control
         OperationLabel.VerticalAlignment =
             VerticalAlignment.Center;
 
+        OperationLabel.SetAnchorsAndOffsetsPreset(
+            Control.LayoutPreset.FullRect
+        );
+
         OperationLabel.AddThemeFontSizeOverride(
             "font_size",
             52
         );
 
-        background.AddChild(
+        panel.AddChild(
             OperationLabel
         );
     }
@@ -218,24 +187,11 @@ public partial class GameUI : Control
         meteorPanel.Size =
             new Vector2(240, 135);
 
+        meteorPanel.Modulate =
+            new Color("#CFC5E8");
+
         AddChild(
             meteorPanel
-        );
-
-        ColorRect background =
-            new ColorRect();
-
-        background.Position =
-            Vector2.Zero;
-
-        background.Size =
-            new Vector2(240, 135);
-
-        background.Color =
-            new Color("#271C43");
-
-        meteorPanel.AddChild(
-            background
         );
 
         Label meteor =
@@ -330,6 +286,13 @@ public partial class GameUI : Control
             30
         );
 
+        Style.ApplyButtonStyle(
+            button,
+            new Color("#27346B"),
+            new Color("#657BD2"),
+            new Color("#9BABFF")
+        );
+
         return button;
     }
 
@@ -368,24 +331,11 @@ public partial class GameUI : Control
         defeatPanel.Size =
             new Vector2(600, 500);
 
+        defeatPanel.Modulate =
+            new Color("#D0C5E8");
+
         AddChild(
             defeatPanel
-        );
-
-        ColorRect background =
-            new ColorRect();
-
-        background.Position =
-            Vector2.Zero;
-
-        background.Size =
-            new Vector2(600, 500);
-
-        background.Color =
-            new Color("#17162F");
-
-        defeatPanel.AddChild(
-            background
         );
 
         Label title =
@@ -440,16 +390,13 @@ public partial class GameUI : Control
         );
 
         Button restart =
-            new Button();
-
-        restart.Text =
-            "REINICIAR";
-
-        restart.Position =
-            new Vector2(95, 310);
-
-        restart.Size =
-            new Vector2(190, 70);
+            CreateActionButton(
+                "REINICIAR",
+                new Vector2(95, 310),
+                new Vector2(190, 70),
+                new Color("#27346B"),
+                new Color("#657BD2")
+            );
 
         restart.AddThemeFontSizeOverride(
             "font_size",
@@ -464,16 +411,13 @@ public partial class GameUI : Control
             () => DefeatRestartRequested?.Invoke();
 
         Button exit =
-            new Button();
-
-        exit.Text =
-            "SAIR";
-
-        exit.Position =
-            new Vector2(315, 310);
-
-        exit.Size =
-            new Vector2(190, 70);
+            CreateActionButton(
+                "SAIR",
+                new Vector2(315, 310),
+                new Vector2(190, 70),
+                new Color("#7A3151"),
+                new Color("#A9446B")
+            );
 
         exit.AddThemeFontSizeOverride(
             "font_size",
@@ -496,9 +440,14 @@ public partial class GameUI : Control
         defeatPanel.Visible =
             true;
 
-        SetGameButtonsEnabled(
-            false
-        );
+        AnswerButton1.Disabled =
+            true;
+
+        AnswerButton2.Disabled =
+            true;
+
+        AnswerButton3.Disabled =
+            true;
     }
 
     public void HideDefeat()
@@ -506,9 +455,14 @@ public partial class GameUI : Control
         defeatPanel.Visible =
             false;
 
-        SetGameButtonsEnabled(
-            true
-        );
+        AnswerButton1.Disabled =
+            false;
+
+        AnswerButton2.Disabled =
+            false;
+
+        AnswerButton3.Disabled =
+            false;
     }
 
     public void UpdateLives(
@@ -570,28 +524,6 @@ public partial class GameUI : Control
         MessageLabel.Text =
             "";
 
-        DisableRestartButtonVisual();
-
         HideDefeat();
-    }
-
-    private void SetGameButtonsEnabled(
-        bool enabled
-    )
-    {
-        AnswerButton1.Disabled =
-            !enabled;
-
-        AnswerButton2.Disabled =
-            !enabled;
-
-        AnswerButton3.Disabled =
-            !enabled;
-
-        RestartButton.Disabled =
-            !enabled;
-
-        ExitButton.Disabled =
-            !enabled;
     }
 }
