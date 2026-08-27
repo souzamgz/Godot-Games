@@ -19,12 +19,17 @@ public partial class GameUI : Control
     public Button RestartButton { get; private set; }
     public Button ExitButton { get; private set; }
 
+    public Panel MeteorPanel { get; private set; }
+
     public event Action RestartRequested;
     public event Action ExitRequested;
     public event Action DefeatRestartRequested;
     public event Action DefeatExitRequested;
 
     private Panel defeatPanel;
+
+    private Button defeatRestartButton;
+    private Button defeatExitButton;
 
     public override void _Ready()
     {
@@ -44,45 +49,40 @@ public partial class GameUI : Control
 
     private void CreateTopButtons()
     {
-        RestartButton =
-            CreateActionButton(
-                "REINICIAR",
-                new Vector2(900, 25),
-                new Vector2(135, 45),
-                new Color("#27346B"),
-                new Color("#657BD2")
-            );
+        RestartButton = CreateActionButton(
+            "REINICIAR",
+            new Vector2(900, 25),
+            new Vector2(135, 45),
+            new Color("#27346B")
+        );
 
         AddChild(
             RestartButton
         );
 
         RestartButton.Pressed +=
-            () => RestartRequested?.Invoke();
+            OnRestartPressed;
 
-        ExitButton =
-            CreateActionButton(
-                "SAIR",
-                new Vector2(1045, 25),
-                new Vector2(110, 45),
-                new Color("#7A3151"),
-                new Color("#A9446B")
-            );
+        ExitButton = CreateActionButton(
+            "SAIR",
+            new Vector2(1045, 25),
+            new Vector2(110, 45),
+            new Color("#A9446B")
+        );
 
         AddChild(
             ExitButton
         );
 
         ExitButton.Pressed +=
-            () => ExitRequested?.Invoke();
+            OnExitPressed;
     }
 
     private Button CreateActionButton(
         string text,
         Vector2 position,
         Vector2 size,
-        Color backgroundColor,
-        Color borderColor
+        Color color
     )
     {
         Button button =
@@ -102,10 +102,10 @@ public partial class GameUI : Control
             16
         );
 
-        Style.ApplyActionButton(
+        ApplyButtonTheme(
             button,
-            backgroundColor,
-            borderColor
+            color,
+            new Color("#AFC0FF")
         );
 
         return button;
@@ -137,20 +137,23 @@ public partial class GameUI : Control
 
     private void CreateQuestionPanel()
     {
-        Panel panel =
+        Panel questionPanel =
             new Panel();
 
-        panel.Position =
+        questionPanel.Position =
             new Vector2(350, 145);
 
-        panel.Size =
+        questionPanel.Size =
             new Vector2(500, 125);
 
-        panel.Modulate =
-            new Color("#D8E0FF");
+        ApplyPanelTheme(
+            questionPanel,
+            new Color("#151F4A"),
+            new Color("#6176D0")
+        );
 
         AddChild(
-            panel
+            questionPanel
         );
 
         OperationLabel =
@@ -171,27 +174,30 @@ public partial class GameUI : Control
             52
         );
 
-        panel.AddChild(
+        questionPanel.AddChild(
             OperationLabel
         );
     }
 
     private void CreateMeteor()
     {
-        Panel meteorPanel =
+        MeteorPanel =
             new Panel();
 
-        meteorPanel.Position =
+        MeteorPanel.Position =
             new Vector2(480, 295);
 
-        meteorPanel.Size =
+        MeteorPanel.Size =
             new Vector2(240, 135);
 
-        meteorPanel.Modulate =
-            new Color("#CFC5E8");
+        ApplyPanelTheme(
+            MeteorPanel,
+            new Color("#271C43"),
+            new Color("#8060C3")
+        );
 
         AddChild(
-            meteorPanel
+            MeteorPanel
         );
 
         Label meteor =
@@ -214,7 +220,7 @@ public partial class GameUI : Control
             44
         );
 
-        meteorPanel.AddChild(
+        MeteorPanel.AddChild(
             meteor
         );
 
@@ -235,7 +241,7 @@ public partial class GameUI : Control
             20
         );
 
-        meteorPanel.AddChild(
+        MeteorPanel.AddChild(
             MeteorHealthLabel
         );
     }
@@ -286,11 +292,10 @@ public partial class GameUI : Control
             30
         );
 
-        Style.ApplyButtonStyle(
+        ApplyButtonTheme(
             button,
             new Color("#27346B"),
-            new Color("#657BD2"),
-            new Color("#9BABFF")
+            new Color("#657BD2")
         );
 
         return button;
@@ -331,8 +336,11 @@ public partial class GameUI : Control
         defeatPanel.Size =
             new Vector2(600, 500);
 
-        defeatPanel.Modulate =
-            new Color("#D0C5E8");
+        ApplyPanelTheme(
+            defeatPanel,
+            new Color("#351C3D"),
+            new Color("#B85C9A")
+        );
 
         AddChild(
             defeatPanel
@@ -389,56 +397,243 @@ public partial class GameUI : Control
             message
         );
 
-        Button restart =
-            CreateActionButton(
+        defeatRestartButton =
+            CreateDefeatButton(
                 "REINICIAR",
                 new Vector2(95, 310),
-                new Vector2(190, 70),
-                new Color("#27346B"),
-                new Color("#657BD2")
+                new Color("#3155A6")
             );
 
-        restart.AddThemeFontSizeOverride(
-            "font_size",
-            22
-        );
-
         defeatPanel.AddChild(
-            restart
+            defeatRestartButton
         );
 
-        restart.Pressed +=
-            () => DefeatRestartRequested?.Invoke();
+        defeatRestartButton.Pressed +=
+            OnDefeatRestartPressed;
 
-        Button exit =
-            CreateActionButton(
+        defeatExitButton =
+            CreateDefeatButton(
                 "SAIR",
                 new Vector2(315, 310),
-                new Vector2(190, 70),
-                new Color("#7A3151"),
                 new Color("#A9446B")
             );
 
-        exit.AddThemeFontSizeOverride(
+        defeatPanel.AddChild(
+            defeatExitButton
+        );
+
+        defeatExitButton.Pressed +=
+            OnDefeatExitPressed;
+
+        defeatPanel.Visible =
+            false;
+
+        MoveChild(
+            defeatPanel,
+            GetChildCount() - 1
+        );
+    }
+
+    private Button CreateDefeatButton(
+        string text,
+        Vector2 position,
+        Color color
+    )
+    {
+        Button button =
+            new Button();
+
+        button.Text =
+            text;
+
+        button.Position =
+            position;
+
+        button.Size =
+            new Vector2(190, 70);
+
+        button.AddThemeFontSizeOverride(
             "font_size",
             22
         );
 
-        defeatPanel.AddChild(
-            exit
+        ApplyButtonTheme(
+            button,
+            color,
+            new Color("#AFC0FF")
         );
 
-        exit.Pressed +=
-            () => DefeatExitRequested?.Invoke();
+        return button;
+    }
 
-        defeatPanel.Visible =
-            false;
+    private void ApplyButtonTheme(
+        Button button,
+        Color normalColor,
+        Color borderColor
+    )
+    {
+        Theme theme =
+            new Theme();
+
+        StyleBoxFlat normal =
+            CreateBox(
+                normalColor,
+                borderColor,
+                3,
+                25
+            );
+
+        StyleBoxFlat hover =
+            CreateBox(
+                normalColor.Lightened(0.15f),
+                borderColor.Lightened(0.15f),
+                4,
+                25
+            );
+
+        StyleBoxFlat pressed =
+            CreateBox(
+                normalColor.Darkened(0.12f),
+                borderColor,
+                4,
+                25
+            );
+
+        StyleBoxFlat disabled =
+            CreateBox(
+                normalColor.Darkened(0.35f),
+                borderColor.Darkened(0.25f),
+                2,
+                25
+            );
+
+        theme.SetStylebox(
+            "normal",
+            "Button",
+            normal
+        );
+
+        theme.SetStylebox(
+            "hover",
+            "Button",
+            hover
+        );
+
+        theme.SetStylebox(
+            "pressed",
+            "Button",
+            pressed
+        );
+
+        theme.SetStylebox(
+            "disabled",
+            "Button",
+            disabled
+        );
+
+        button.Theme =
+            theme;
+    }
+
+    private void ApplyPanelTheme(
+        Panel panel,
+        Color backgroundColor,
+        Color borderColor
+    )
+    {
+        Theme theme =
+            new Theme();
+
+        StyleBoxFlat panelStyle =
+            CreateBox(
+                backgroundColor,
+                borderColor,
+                3,
+                30
+            );
+
+        theme.SetStylebox(
+            "panel",
+            "Panel",
+            panelStyle
+        );
+
+        panel.Theme =
+            theme;
+    }
+
+    private StyleBoxFlat CreateBox(
+        Color backgroundColor,
+        Color borderColor,
+        int borderWidth,
+        int cornerRadius
+    )
+    {
+        StyleBoxFlat style =
+            new StyleBoxFlat();
+
+        style.BgColor =
+            backgroundColor;
+
+        style.BorderColor =
+            borderColor;
+
+        style.BorderWidthLeft =
+            borderWidth;
+
+        style.BorderWidthRight =
+            borderWidth;
+
+        style.BorderWidthTop =
+            borderWidth;
+
+        style.BorderWidthBottom =
+            borderWidth;
+
+        style.CornerRadiusTopLeft =
+            cornerRadius;
+
+        style.CornerRadiusTopRight =
+            cornerRadius;
+
+        style.CornerRadiusBottomLeft =
+            cornerRadius;
+
+        style.CornerRadiusBottomRight =
+            cornerRadius;
+
+        return style;
+    }
+
+    private void OnRestartPressed()
+    {
+        RestartRequested?.Invoke();
+    }
+
+    private void OnExitPressed()
+    {
+        ExitRequested?.Invoke();
+    }
+
+    private void OnDefeatRestartPressed()
+    {
+        DefeatRestartRequested?.Invoke();
+    }
+
+    private void OnDefeatExitPressed()
+    {
+        DefeatExitRequested?.Invoke();
     }
 
     public void ShowDefeat()
     {
         defeatPanel.Visible =
             true;
+
+        MoveChild(
+            defeatPanel,
+            GetChildCount() - 1
+        );
 
         AnswerButton1.Disabled =
             true;
@@ -447,6 +642,12 @@ public partial class GameUI : Control
             true;
 
         AnswerButton3.Disabled =
+            true;
+
+        RestartButton.Disabled =
+            true;
+
+        ExitButton.Disabled =
             true;
     }
 
@@ -463,12 +664,25 @@ public partial class GameUI : Control
 
         AnswerButton3.Disabled =
             false;
+
+        RestartButton.Disabled =
+            false;
+
+        ExitButton.Disabled =
+            false;
     }
 
     public void UpdateLives(
         int lives
     )
     {
+        lives =
+            Mathf.Clamp(
+                lives,
+                0,
+                MaxLives
+            );
+
         string hearts =
             "";
 
@@ -500,12 +714,12 @@ public partial class GameUI : Control
         int health
     )
     {
-        if (
-            health < 0
-        )
-        {
-            health = 0;
-        }
+        health =
+            Mathf.Clamp(
+                health,
+                0,
+                EasyMeteorMaxHealth
+            );
 
         MeteorHealthLabel.Text =
             $"❤️ {health} / {EasyMeteorMaxHealth}";
@@ -525,5 +739,41 @@ public partial class GameUI : Control
             "";
 
         HideDefeat();
+
+        MeteorPanel.Visible =
+            true;
+
+        MeteorPanel.Scale =
+            Vector2.One;
+
+        MeteorPanel.Modulate =
+            Colors.White;
+
+        AnswerButton1.Modulate =
+            Colors.White;
+
+        AnswerButton2.Modulate =
+            Colors.White;
+
+        AnswerButton3.Modulate =
+            Colors.White;
+
+        AnswerButton1.Scale =
+            Vector2.One;
+
+        AnswerButton2.Scale =
+            Vector2.One;
+
+        AnswerButton3.Scale =
+            Vector2.One;
+
+        AnswerButton1.Position =
+            new Vector2(145, 505);
+
+        AnswerButton2.Position =
+            new Vector2(490, 505);
+
+        AnswerButton3.Position =
+            new Vector2(835, 505);
     }
 }
