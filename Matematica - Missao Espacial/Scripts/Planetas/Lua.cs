@@ -1,6 +1,278 @@
 using Godot;
 using System;
 
-public partial class Lua : Terra
+public partial class Lua : Control
 {
+    private GameUI ui;
+
+    private Random random =
+        new Random();
+
+    private int correctAnswer;
+
+    private int meteorHealth;
+
+    private int meteorMaxHealth;
+
+    private int currentQuestion = 1;
+
+    private bool canAnswer = true;
+
+    public override void _Ready()
+    {
+        ui =
+            new GameUI();
+
+        AddChild(
+            ui
+        );
+
+        ui.SetAnchorsAndOffsetsPreset(
+            Control.LayoutPreset.FullRect
+        );
+
+        ui.RestartRequested +=
+            RestartGame;
+
+        ui.ExitRequested +=
+            ExitGame;
+
+        ui.AnswerButton1.Pressed +=
+            () => Shoot(ui.AnswerButton1);
+
+        ui.AnswerButton2.Pressed +=
+            () => Shoot(ui.AnswerButton2);
+
+        ui.AnswerButton3.Pressed +=
+            () => Shoot(ui.AnswerButton3);
+
+        meteorMaxHealth =
+            30;
+
+        meteorHealth =
+            meteorMaxHealth;
+
+        UpdateMeteorHealth();
+
+        GenerateNewQuestion();
+    }
+
+    private void GenerateNewQuestion()
+    {
+        GenerateOperation();
+
+        GenerateAnswers();
+
+        ui.MessageLabel.Text =
+            "";
+
+        canAnswer =
+            true;
+
+        SetAnswerButtonsEnabled(
+            true
+        );
+    }
+
+    private void GenerateOperation()
+    {
+        int number1 =
+            random.Next(2, 10);
+
+        int number2 =
+            random.Next(1, number1 + 1);
+
+        correctAnswer =
+            number1 - number2;
+
+        ui.OperationLabel.Text =
+            $"{number1} − {number2}";
+    }
+
+    private void GenerateAnswers()
+    {
+        int answer1 =
+            correctAnswer;
+
+        int answer2;
+
+        int answer3;
+
+        do
+        {
+            answer2 =
+                Math.Max(
+                    0,
+                    correctAnswer +
+                    random.Next(-4, 5)
+                );
+        }
+        while (
+            answer2 == correctAnswer
+        );
+
+        do
+        {
+            answer3 =
+                Math.Max(
+                    0,
+                    correctAnswer +
+                    random.Next(-5, 6)
+                );
+        }
+        while (
+            answer3 == correctAnswer ||
+            answer3 == answer2
+        );
+
+        int[] answers =
+        {
+            answer1,
+            answer2,
+            answer3
+        };
+
+        for (
+            int i = answers.Length - 1;
+            i > 0;
+            i--
+        )
+        {
+            int j =
+                random.Next(i + 1);
+
+            int temp =
+                answers[i];
+
+            answers[i] =
+                answers[j];
+
+            answers[j] =
+                temp;
+        }
+
+        ui.AnswerButton1.Text =
+            answers[0].ToString();
+
+        ui.AnswerButton2.Text =
+            answers[1].ToString();
+
+        ui.AnswerButton3.Text =
+            answers[2].ToString();
+    }
+
+    private async void Shoot(
+        Button button
+    )
+    {
+        if (!canAnswer)
+            return;
+
+        canAnswer =
+            false;
+
+        SetAnswerButtonsEnabled(
+            false
+        );
+
+        int selectedAnswer =
+            int.Parse(
+                button.Text
+            );
+
+        if (
+            selectedAnswer ==
+            correctAnswer
+        )
+        {
+            meteorHealth -=
+                10;
+
+            ui.MessageLabel.Text =
+                "🎯 Acertou!";
+        }
+        else
+        {
+            meteorHealth -=
+                5;
+
+            ui.MessageLabel.Text =
+                "💥 Quase!";
+        }
+
+        UpdateMeteorHealth();
+
+        await ToSignal(
+            GetTree().CreateTimer(0.5),
+            SceneTreeTimer.SignalName.Timeout
+        );
+
+        if (
+            meteorHealth <= 0
+        )
+        {
+            ui.MessageLabel.Text =
+                "💥 Meteoro destruído!";
+
+            await ToSignal(
+                GetTree().CreateTimer(0.7),
+                SceneTreeTimer.SignalName.Timeout
+            );
+
+            meteorHealth =
+                meteorMaxHealth;
+
+            currentQuestion++;
+
+            UpdateMeteorHealth();
+
+            GenerateNewQuestion();
+
+            return;
+        }
+
+        currentQuestion++;
+
+        GenerateNewQuestion();
+    }
+
+    private void UpdateMeteorHealth()
+    {
+        ui.MeteorHealthLabel.Text =
+            $"❤️ {meteorHealth} / {meteorMaxHealth}";
+    }
+
+    private void SetAnswerButtonsEnabled(
+        bool enabled
+    )
+    {
+        ui.AnswerButton1.Disabled =
+            !enabled;
+
+        ui.AnswerButton2.Disabled =
+            !enabled;
+
+        ui.AnswerButton3.Disabled =
+            !enabled;
+    }
+
+    private void RestartGame()
+    {
+        meteorHealth =
+            meteorMaxHealth;
+
+        currentQuestion =
+            1;
+
+        GenerateNewQuestion();
+
+        UpdateMeteorHealth();
+    }
+
+    private void ExitGame()
+    {
+        GetTree().ChangeSceneToFile(
+            "res://Main.tscn"
+        );
+    }
 }
