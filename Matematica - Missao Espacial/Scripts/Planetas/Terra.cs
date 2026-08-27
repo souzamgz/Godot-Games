@@ -14,9 +14,11 @@ public partial class Terra : Control
 
     private int meteorMaxHealth;
 
-    private int currentQuestion = 1;
+    private int currentQuestion =
+        1;
 
-    private bool canAnswer = true;
+    private bool canAnswer =
+        true;
 
     public override void _Ready()
     {
@@ -38,13 +40,19 @@ public partial class Terra : Control
             ExitGame;
 
         ui.AnswerButton1.Pressed +=
-            () => Shoot(ui.AnswerButton1);
+            () => Shoot(
+                ui.AnswerButton1
+            );
 
         ui.AnswerButton2.Pressed +=
-            () => Shoot(ui.AnswerButton2);
+            () => Shoot(
+                ui.AnswerButton2
+            );
 
         ui.AnswerButton3.Pressed +=
-            () => Shoot(ui.AnswerButton3);
+            () => Shoot(
+                ui.AnswerButton3
+            );
 
         meteorMaxHealth =
             30;
@@ -271,8 +279,12 @@ public partial class Terra : Control
 
     private void ExitGame()
     {
-        GetTree().ChangeSceneToFile(
-            "res://Main.tscn"
-        );
+        Main main =
+            GetParent() as Main;
+
+        if (main != null)
+        {
+            main.ReturnToLobby();
+        }
     }
 }

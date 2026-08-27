@@ -4,3 +4,4 @@ res://Scripts/Planetas/Jupiter.cs
 res://Scripts/Planetas/Lua.cs
 res://Scripts/Planetas/Marte.cs
 res://Scripts/Planetas/Terra.cs
+res://Scripts/GameUI.cs

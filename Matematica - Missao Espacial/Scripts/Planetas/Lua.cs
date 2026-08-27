@@ -14,9 +14,11 @@ public partial class Lua : Control
 
     private int meteorMaxHealth;
 
-    private int currentQuestion = 1;
+    private int currentQuestion =
+        1;
 
-    private bool canAnswer = true;
+    private bool canAnswer =
+        true;
 
     public override void _Ready()
     {
@@ -38,13 +40,19 @@ public partial class Lua : Control
             ExitGame;
 
         ui.AnswerButton1.Pressed +=
-            () => Shoot(ui.AnswerButton1);
+            () => Shoot(
+                ui.AnswerButton1
+            );
 
         ui.AnswerButton2.Pressed +=
-            () => Shoot(ui.AnswerButton2);
+            () => Shoot(
+                ui.AnswerButton2
+            );
 
         ui.AnswerButton3.Pressed +=
-            () => Shoot(ui.AnswerButton3);
+            () => Shoot(
+                ui.AnswerButton3
+            );
 
         meteorMaxHealth =
             30;
@@ -80,7 +88,10 @@ public partial class Lua : Control
             random.Next(2, 10);
 
         int number2 =
-            random.Next(1, number1 + 1);
+            random.Next(
+                1,
+                number1 + 1
+            );
 
         correctAnswer =
             number1 - number2;
@@ -271,8 +282,12 @@ public partial class Lua : Control
 
     private void ExitGame()
     {
-        GetTree().ChangeSceneToFile(
-            "res://Main.tscn"
-        );
+        Main main =
+            GetParent() as Main;
+
+        if (main != null)
+        {
+            main.ReturnToLobby();
+        }
     }
 }

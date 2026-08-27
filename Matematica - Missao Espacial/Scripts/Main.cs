@@ -2,522 +2,667 @@ using Godot;
 
 public partial class Main : Control
 {
-    private ColorRect background;
+	private ColorRect background;
 
-    private Panel startPanel;
+	private Panel startPanel;
 
-    private Label titleLabel;
-    private Label subtitleLabel;
-    private Label difficultyLabel;
+	private Label titleLabel;
+	private Label subtitleLabel;
+	private Label difficultyLabel;
+	private Label selectedPlanetLabel;
 
-    private Button startButton;
+	private Button startButton;
 
-    private Button planetButton1;
-    private Button planetButton2;
-    private Button planetButton3;
-    private Button planetButton4;
+	private Button planetButton1;
+	private Button planetButton2;
+	private Button planetButton3;
+	private Button planetButton4;
 
-    private Button previousDifficultyButton;
-    private Button nextDifficultyButton;
+	private Button previousDifficultyButton;
+	private Button nextDifficultyButton;
 
-    private int selectedPlanet = 0;
+	private int selectedPlanet = 0;
 
-    public override void _Ready()
-    {
-        CreateLobby();
+	public override void _Ready()
+	{
+		CreateLobby();
 
-        SelectPlanet(0);
-    }
+		SelectPlanet(0);
+	}
 
-    private void CreateLobby()
-    {
-        CreateBackground();
+	private void CreateLobby()
+	{
+		CreateBackground();
 
-        CreateStars();
+		CreateStars();
 
-        CreateStartPanel();
+		CreateStartPanel();
 
-        CreateTitle();
+		CreateTitle();
 
-        CreateSubtitle();
+		CreateSubtitle();
 
-        CreateDifficulty();
+		CreateDifficulty();
 
-        CreatePlanetButtons();
+		CreatePlanetButtons();
 
-        CreateDifficultyButtons();
+		CreateDifficultyButtons();
 
-        CreateStartButton();
-    }
+		CreateSelectedPlanetLabel();
 
-    private void CreateBackground()
-    {
-        background =
-            new ColorRect();
+		CreateStartButton();
+	}
 
-        background.SetAnchorsAndOffsetsPreset(
-            Control.LayoutPreset.FullRect
-        );
+	private void CreateBackground()
+	{
+		background =
+			new ColorRect();
 
-        background.Color =
-            new Color("#080D24");
+		background.SetAnchorsAndOffsetsPreset(
+			Control.LayoutPreset.FullRect
+		);
 
-        AddChild(
-            background
-        );
-    }
+		background.Color =
+			new Color("#080D24");
 
-    private void CreateStartPanel()
-    {
-        startPanel =
-            new Panel();
+		AddChild(
+			background
+		);
 
-        startPanel.Position =
-            new Vector2(180, 70);
+		MoveChild(
+			background,
+			0
+		);
+	}
 
-        startPanel.Size =
-            new Vector2(920, 600);
+	private void CreateStartPanel()
+	{
+		startPanel =
+			new Panel();
 
-        startPanel.AddThemeStyleboxOverride(
-            "panel",
-            Style.CreateBox(
-                new Color("#101938"),
-                new Color("#5D73D8"),
-                3,
-                35
-            )
-        );
+		startPanel.Position =
+			new Vector2(180, 70);
 
-        AddChild(
-            startPanel
-        );
-    }
+		startPanel.Size =
+			new Vector2(920, 600);
 
-    private void CreateTitle()
-    {
-        titleLabel =
-            new Label();
+		startPanel.AddThemeStyleboxOverride(
+			"panel",
+			Style.CreateBox(
+				new Color("#101938"),
+				new Color("#5D73D8"),
+				3,
+				35
+			)
+		);
 
-        titleLabel.Text =
-            "🚀 MISSÃO ESPACIAL";
+		AddChild(
+			startPanel
+		);
+	}
 
-        titleLabel.HorizontalAlignment =
-            HorizontalAlignment.Center;
+	private void CreateTitle()
+	{
+		titleLabel =
+			new Label();
 
-        titleLabel.Position =
-            new Vector2(40, 35);
+		titleLabel.Text =
+			"🚀 MISSÃO ESPACIAL";
 
-        titleLabel.Size =
-            new Vector2(840, 80);
+		titleLabel.HorizontalAlignment =
+			HorizontalAlignment.Center;
 
-        titleLabel.AddThemeFontSizeOverride(
-            "font_size",
-            44
-        );
+		titleLabel.Position =
+			new Vector2(40, 35);
 
-        startPanel.AddChild(
-            titleLabel
-        );
-    }
+		titleLabel.Size =
+			new Vector2(840, 80);
 
-    private void CreateSubtitle()
-    {
-        subtitleLabel =
-            new Label();
+		titleLabel.AddThemeFontSizeOverride(
+			"font_size",
+			44
+		);
 
-        subtitleLabel.Text =
-            "Escolha um planeta para iniciar sua missão";
+		startPanel.AddChild(
+			titleLabel
+		);
+	}
 
-        subtitleLabel.HorizontalAlignment =
-            HorizontalAlignment.Center;
+	private void CreateSubtitle()
+	{
+		subtitleLabel =
+			new Label();
 
-        subtitleLabel.Position =
-            new Vector2(40, 105);
+		subtitleLabel.Text =
+			"Escolha um planeta para iniciar sua missão";
 
-        subtitleLabel.Size =
-            new Vector2(840, 45);
+		subtitleLabel.HorizontalAlignment =
+			HorizontalAlignment.Center;
 
-        subtitleLabel.AddThemeFontSizeOverride(
-            "font_size",
-            21
-        );
+		subtitleLabel.Position =
+			new Vector2(40, 105);
 
-        startPanel.AddChild(
-            subtitleLabel
-        );
-    }
+		subtitleLabel.Size =
+			new Vector2(840, 45);
 
-    private void CreateDifficulty()
-    {
-        difficultyLabel =
-            new Label();
+		subtitleLabel.AddThemeFontSizeOverride(
+			"font_size",
+			21
+		);
 
-        difficultyLabel.Text =
-            "FÁCIL";
+		startPanel.AddChild(
+			subtitleLabel
+		);
+	}
 
-        difficultyLabel.HorizontalAlignment =
-            HorizontalAlignment.Center;
+	private void CreateDifficulty()
+	{
+		difficultyLabel =
+			new Label();
 
-        difficultyLabel.Position =
-            new Vector2(40, 155);
+		difficultyLabel.Text =
+			"FÁCIL";
 
-        difficultyLabel.Size =
-            new Vector2(840, 45);
+		difficultyLabel.HorizontalAlignment =
+			HorizontalAlignment.Center;
 
-        difficultyLabel.AddThemeFontSizeOverride(
-            "font_size",
-            27
-        );
+		difficultyLabel.Position =
+			new Vector2(40, 155);
 
-        startPanel.AddChild(
-            difficultyLabel
-        );
-    }
+		difficultyLabel.Size =
+			new Vector2(840, 45);
 
-    private void CreatePlanetButtons()
-    {
-        planetButton1 =
-            CreatePlanetButton(
+		difficultyLabel.AddThemeFontSizeOverride(
+			"font_size",
+			27
+		);
+
+		startPanel.AddChild(
+			difficultyLabel
+		);
+	}
+
+	private void CreatePlanetButtons()
+	{
+		planetButton1 =
+			CreatePlanetButton(
                 "🌍\nTERRA\n+"
-            );
+			);
 
-        planetButton2 =
-            CreatePlanetButton(
+		planetButton2 =
+			CreatePlanetButton(
                 "🌙\nLUA\n−"
-            );
+			);
 
-        planetButton3 =
-            CreatePlanetButton(
+		planetButton3 =
+			CreatePlanetButton(
                 "🔴\nMARTE\n×"
-            );
+			);
 
-        planetButton4 =
-            CreatePlanetButton(
+		planetButton4 =
+			CreatePlanetButton(
                 "🟣\nJÚPITER\n÷"
-            );
+			);
 
-        planetButton1.Position =
-            new Vector2(80, 210);
+		planetButton1.Position =
+			new Vector2(80, 210);
 
-        planetButton2.Position =
-            new Vector2(285, 210);
+		planetButton2.Position =
+			new Vector2(285, 210);
 
-        planetButton3.Position =
-            new Vector2(490, 210);
+		planetButton3.Position =
+			new Vector2(490, 210);
 
-        planetButton4.Position =
-            new Vector2(695, 210);
+		planetButton4.Position =
+			new Vector2(695, 210);
 
-        startPanel.AddChild(
-            planetButton1
-        );
+		startPanel.AddChild(
+			planetButton1
+		);
 
-        startPanel.AddChild(
-            planetButton2
-        );
+		startPanel.AddChild(
+			planetButton2
+		);
 
-        startPanel.AddChild(
-            planetButton3
-        );
+		startPanel.AddChild(
+			planetButton3
+		);
 
-        startPanel.AddChild(
-            planetButton4
-        );
+		startPanel.AddChild(
+			planetButton4
+		);
 
-        planetButton1.Pressed +=
-            () => SelectPlanet(0);
+		planetButton1.Pressed +=
+			() => SelectPlanet(0);
 
-        planetButton2.Pressed +=
-            () => SelectPlanet(1);
+		planetButton2.Pressed +=
+			() => SelectPlanet(1);
 
-        planetButton3.Pressed +=
-            () => SelectPlanet(2);
+		planetButton3.Pressed +=
+			() => SelectPlanet(2);
 
-        planetButton4.Pressed +=
-            () => SelectPlanet(3);
-    }
+		planetButton4.Pressed +=
+			() => SelectPlanet(3);
+	}
 
-    private Button CreatePlanetButton(
-        string text
-    )
-    {
-        Button button =
-            new Button();
+	private Button CreatePlanetButton(
+		string text
+	)
+	{
+		Button button =
+			new Button();
 
-        button.Text =
-            text;
+		button.Text =
+			text;
 
-        button.Size =
-            new Vector2(190, 210);
+		button.Size =
+			new Vector2(190, 210);
 
-        button.AddThemeFontSizeOverride(
-            "font_size",
-            20
-        );
+		button.AddThemeFontSizeOverride(
+			"font_size",
+			20
+		);
 
-        Style.ApplyButtonStyle(
-            button,
-            new Color("#18244C"),
-            new Color("#27396F"),
-            new Color("#5368B7")
-        );
+		Style.ApplyButtonStyle(
+			button,
+			new Color("#18244C"),
+			new Color("#27396F"),
+			new Color("#5368B7")
+		);
 
-        return button;
-    }
+		return button;
+	}
 
-    private void CreateDifficultyButtons()
-    {
-        previousDifficultyButton =
-            CreateDifficultyButton(
+	private void CreateDifficultyButtons()
+	{
+		previousDifficultyButton =
+			CreateDifficultyButton(
                 "◀"
-            );
+			);
 
-        nextDifficultyButton =
-            CreateDifficultyButton(
+		nextDifficultyButton =
+			CreateDifficultyButton(
                 "▶"
-            );
+			);
 
-        previousDifficultyButton.Position =
-            new Vector2(15, 275);
+		previousDifficultyButton.Position =
+			new Vector2(15, 275);
 
-        nextDifficultyButton.Position =
-            new Vector2(850, 275);
+		nextDifficultyButton.Position =
+			new Vector2(850, 275);
 
-        startPanel.AddChild(
-            previousDifficultyButton
-        );
+		startPanel.AddChild(
+			previousDifficultyButton
+		);
 
-        startPanel.AddChild(
-            nextDifficultyButton
-        );
+		startPanel.AddChild(
+			nextDifficultyButton
+		);
 
-        previousDifficultyButton.Pressed +=
-            PreviousDifficulty;
+		previousDifficultyButton.Pressed +=
+			PreviousDifficulty;
 
-        nextDifficultyButton.Pressed +=
-            NextDifficulty;
-    }
+		nextDifficultyButton.Pressed +=
+			NextDifficulty;
+	}
 
-    private Button CreateDifficultyButton(
-        string text
-    )
-    {
-        Button button =
-            new Button();
+	private Button CreateDifficultyButton(
+		string text
+	)
+	{
+		Button button =
+			new Button();
 
-        button.Text =
-            text;
+		button.Text =
+			text;
 
-        button.Size =
-            new Vector2(55, 80);
+		button.Size =
+			new Vector2(55, 80);
 
-        button.AddThemeFontSizeOverride(
-            "font_size",
-            28
-        );
+		button.AddThemeFontSizeOverride(
+			"font_size",
+			28
+		);
 
-        Style.ApplyButtonStyle(
-            button,
-            new Color("#18244C"),
-            new Color("#27396F"),
-            new Color("#5368B7")
-        );
+		Style.ApplyButtonStyle(
+			button,
+			new Color("#18244C"),
+			new Color("#27396F"),
+			new Color("#5368B7")
+		);
 
-        return button;
-    }
+		return button;
+	}
 
-    private void PreviousDifficulty()
-    {
-    }
+	private void PreviousDifficulty()
+	{
+	}
 
-    private void NextDifficulty()
-    {
-    }
+	private void NextDifficulty()
+	{
+	}
 
-    private void CreateStartButton()
-    {
-        startButton =
-            new Button();
+	private void CreateSelectedPlanetLabel()
+	{
+		selectedPlanetLabel =
+			new Label();
 
-        startButton.Text =
-            "🚀 INICIAR MISSÃO";
+		selectedPlanetLabel.HorizontalAlignment =
+			HorizontalAlignment.Center;
 
-        startButton.Position =
-            new Vector2(300, 500);
+		selectedPlanetLabel.Position =
+			new Vector2(40, 435);
 
-        startButton.Size =
-            new Vector2(320, 70);
+		selectedPlanetLabel.Size =
+			new Vector2(840, 45);
 
-        startButton.AddThemeFontSizeOverride(
-            "font_size",
-            24
-        );
+		selectedPlanetLabel.AddThemeFontSizeOverride(
+			"font_size",
+			22
+		);
 
-        Style.ApplyButtonStyle(
-            startButton,
-            new Color("#3155A6"),
-            new Color("#4569C6"),
-            new Color("#7E95F0")
-        );
+		startPanel.AddChild(
+			selectedPlanetLabel
+		);
+	}
 
-        startPanel.AddChild(
-            startButton
-        );
+	private void CreateStartButton()
+	{
+		startButton =
+			new Button();
 
-        startButton.Pressed +=
-            StartSelectedPlanet;
-    }
+		startButton.Text =
+			"🚀 INICIAR MISSÃO";
 
-    private void SelectPlanet(
-        int planet
-    )
-    {
-        selectedPlanet =
-            planet;
+		startButton.Position =
+			new Vector2(300, 500);
 
-        planetButton1.ButtonPressed =
-            planet == 0;
+		startButton.Size =
+			new Vector2(320, 70);
 
-        planetButton2.ButtonPressed =
-            planet == 1;
+		startButton.AddThemeFontSizeOverride(
+			"font_size",
+			24
+		);
 
-        planetButton3.ButtonPressed =
-            planet == 2;
+		Style.ApplyButtonStyle(
+			startButton,
+			new Color("#3155A6"),
+			new Color("#4569C6"),
+			new Color("#7E95F0")
+		);
 
-        planetButton4.ButtonPressed =
-            planet == 3;
-    }
+		startPanel.AddChild(
+			startButton
+		);
 
-    private void StartSelectedPlanet()
-    {
-        startPanel.Visible =
-            false;
+		startButton.Pressed +=
+			StartSelectedPlanet;
+	}
 
-        background.Color =
-            GetPlanetColor();
+	private void SelectPlanet(
+		int planet
+	)
+	{
+		selectedPlanet =
+			planet;
 
-        switch (selectedPlanet)
-        {
-            case 0:
-                StartPlanet(
-                    new Terra()
-                );
-                break;
+		UpdatePlanetVisuals();
+	}
 
-            case 1:
-                StartPlanet(
-                    new Lua()
-                );
-                break;
+	private void UpdatePlanetVisuals()
+	{
+		UpdatePlanetButton(
+			planetButton1,
+			0,
+            "🌍\nTERRA\n+"
+		);
 
-            case 2:
-                StartPlanet(
-                    new Marte()
-                );
-                break;
+		UpdatePlanetButton(
+			planetButton2,
+			1,
+            "🌙\nLUA\n−"
+		);
 
-            case 3:
-                StartPlanet(
-                    new Jupiter()
-                );
-                break;
-        }
-    }
+		UpdatePlanetButton(
+			planetButton3,
+			2,
+            "🔴\nMARTE\n×"
+		);
 
-    private void StartPlanet(
-        Control planet
-    )
-    {
-        AddChild(
-            planet
-        );
+		UpdatePlanetButton(
+			planetButton4,
+			3,
+            "🟣\nJÚPITER\n÷"
+		);
 
-        planet.SetAnchorsAndOffsetsPreset(
-            Control.LayoutPreset.FullRect
-        );
-    }
+		string[] names =
+		{
+			"🌍 TERRA",
+			"🌙 LUA",
+			"🔴 MARTE",
+            "🟣 JÚPITER"
+		};
 
-    private Color GetPlanetColor()
-    {
-        switch (selectedPlanet)
-        {
-            case 0:
-                return new Color("#102D4A");
+		selectedPlanetLabel.Text =
+			$"✓ PLANETA SELECIONADO: {names[selectedPlanet]}";
+	}
 
-            case 1:
-                return new Color("#24243A");
+	private void UpdatePlanetButton(
+		Button button,
+		int planetIndex,
+		string originalText
+	)
+	{
+		bool selected =
+			selectedPlanet == planetIndex;
 
-            case 2:
-                return new Color("#451C1C");
+		if (selected)
+		{
+			button.Text =
+				"✓\n" + originalText;
 
-            case 3:
-                return new Color("#321F4D");
+			Style.ApplyButtonStyle(
+				button,
+				new Color("#3155A6"),
+				new Color("#4569C6"),
+				new Color("#AFC0FF"),
+				5
+			);
 
-            default:
-                return new Color("#080D24");
-        }
-    }
+			button.AddThemeFontSizeOverride(
+				"font_size",
+				20
+			);
+		}
+		else
+		{
+			button.Text =
+				originalText;
 
-    private void CreateStars()
-    {
-        string[] stars =
-        {
-            "✦", "·", "✧", "·",
-            "✦", "·", "✧", "·",
-            "✦", "·", "✧", "·",
-            "✦", "·", "✧", "·",
-            "✦", "·", "✧", "·"
-        };
+			Style.ApplyButtonStyle(
+				button,
+				new Color("#18244C"),
+				new Color("#27396F"),
+				new Color("#5368B7"),
+				3
+			);
 
-        Vector2[] positions =
-        {
-            new Vector2(70, 150),
-            new Vector2(180, 250),
-            new Vector2(1040, 170),
-            new Vector2(1100, 300),
-            new Vector2(80, 400),
-            new Vector2(1050, 500),
-            new Vector2(250, 600),
-            new Vector2(950, 630),
-            new Vector2(1150, 380),
-            new Vector2(400, 130),
-            new Vector2(750, 130),
-            new Vector2(50, 620),
-            new Vector2(1120, 650),
-            new Vector2(200, 520),
-            new Vector2(1000, 250),
-            new Vector2(300, 350),
-            new Vector2(850, 350),
-            new Vector2(600, 130),
-            new Vector2(1150, 150),
-            new Vector2(100, 550)
-        };
+			button.AddThemeFontSizeOverride(
+				"font_size",
+				20
+			);
+		}
+	}
 
-        for (
-            int i = 0;
-            i < stars.Length;
-            i++
-        )
-        {
-            Label star =
-                new Label();
+	private void StartSelectedPlanet()
+	{
+		startPanel.Visible =
+			false;
 
-            star.Text =
-                stars[i];
+		background.Color =
+			GetPlanetColor();
 
-            star.Position =
-                positions[i];
+		switch (selectedPlanet)
+		{
+			case 0:
+				StartPlanet(
+					new Terra()
+				);
+				break;
 
-            star.AddThemeFontSizeOverride(
-                "font_size",
-                i % 3 == 0
-                    ? 22
-                    : 14
-            );
+			case 1:
+				StartPlanet(
+					new Lua()
+				);
+				break;
 
-            AddChild(
-                star
-            );
-        }
-    }
+			case 2:
+				StartPlanet(
+					new Marte()
+				);
+				break;
+
+			case 3:
+				StartPlanet(
+					new Jupiter()
+				);
+				break;
+		}
+	}
+
+	private void StartPlanet(
+		Control planet
+	)
+	{
+		AddChild(
+			planet
+		);
+
+		planet.SetAnchorsAndOffsetsPreset(
+			Control.LayoutPreset.FullRect
+		);
+
+		MoveChild(
+			planet,
+			GetChildCount() - 1
+		);
+	}
+
+	public void ReturnToLobby()
+	{
+		for (
+			int i = GetChildCount() - 1;
+			i >= 0;
+			i--
+		)
+		{
+			Node child =
+				GetChild(i);
+
+			if (
+				child is Terra ||
+				child is Lua ||
+				child is Marte ||
+				child is Jupiter
+			)
+			{
+				child.QueueFree();
+			}
+		}
+
+		background.Color =
+			new Color("#080D24");
+
+		startPanel.Visible =
+			true;
+
+		SelectPlanet(
+			selectedPlanet
+		);
+	}
+
+	private Color GetPlanetColor()
+	{
+		switch (selectedPlanet)
+		{
+			case 0:
+				return new Color("#102D4A");
+
+			case 1:
+				return new Color("#24243A");
+
+			case 2:
+				return new Color("#451C1C");
+
+			case 3:
+				return new Color("#321F4D");
+
+			default:
+				return new Color("#080D24");
+		}
+	}
+
+	private void CreateStars()
+	{
+		string[] stars =
+		{
+			"✦", "·", "✧", "·",
+			"✦", "·", "✧", "·",
+			"✦", "·", "✧", "·",
+			"✦", "·", "✧", "·",
+			"✦", "·", "✧", "·"
+		};
+
+		Vector2[] positions =
+		{
+			new Vector2(70, 150),
+			new Vector2(180, 250),
+			new Vector2(1040, 170),
+			new Vector2(1100, 300),
+			new Vector2(80, 400),
+			new Vector2(1050, 500),
+			new Vector2(250, 600),
+			new Vector2(950, 630),
+			new Vector2(1150, 380),
+			new Vector2(400, 130),
+			new Vector2(750, 130),
+			new Vector2(50, 620),
+			new Vector2(1120, 650),
+			new Vector2(200, 520),
+			new Vector2(1000, 250),
+			new Vector2(300, 350),
+			new Vector2(850, 350),
+			new Vector2(600, 130),
+			new Vector2(1150, 150),
+			new Vector2(100, 550)
+		};
+
+		for (
+			int i = 0;
+			i < stars.Length;
+			i++
+		)
+		{
+			Label star =
+				new Label();
+
+			star.Text =
+				stars[i];
+
+			star.Position =
+				positions[i];
+
+			star.AddThemeFontSizeOverride(
+				"font_size",
+				i % 3 == 0
+					? 22
+					: 14
+			);
+
+			AddChild(
+				star
+			);
+		}
+	}
 }
