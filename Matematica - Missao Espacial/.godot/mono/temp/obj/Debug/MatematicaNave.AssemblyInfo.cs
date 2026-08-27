@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MatematicaNave")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+291bb6644b58d232d1c9c678ecc8b11f529697cd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+15add25ac57987f663497bf046401bb20b4e99c3")]
 [assembly: System.Reflection.AssemblyProductAttribute("MatematicaNave")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MatematicaNave")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
