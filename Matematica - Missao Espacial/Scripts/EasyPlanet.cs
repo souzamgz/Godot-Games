@@ -311,32 +311,29 @@ public abstract partial class EasyPlanet : Control
         StartGame();
     }
 
-    private void ExitToMenu()
-    {
-        string[] possiblePaths =
-        {
-            "res://Cenas/Main.tscn",
-            "res://Main.tscn"
-        };
+private void ExitToMenu()
+{
+    Node current =
+        GetParent();
 
-        foreach (
-            string path in possiblePaths
+    while (
+        current != null
+    )
+    {
+        if (
+            current is Main main
         )
         {
-            if (
-                ResourceLoader.Exists(path)
-            )
-            {
-                GetTree().ChangeSceneToFile(
-                    path
-                );
-
-                return;
-            }
+            main.ReturnToLobby();
+            return;
         }
 
-        GD.PrintErr(
-            "Não foi possível encontrar Main.tscn."
-        );
+        current =
+            current.GetParent();
     }
+
+    GD.PrintErr(
+        "Não foi possível encontrar o Main para voltar ao menu."
+    );
+}
 }
