@@ -3,6 +3,12 @@ using System;
 
 public partial class GameUI : Control
 {
+    public const int EasyMeteorMaxHealth = 30;
+
+    public const int EasyDamagePerCorrectAnswer = 10;
+
+    public const int MaxLives = 3;
+
     public Label OperationLabel { get; private set; }
 
     public Label MeteorHealthLabel { get; private set; }
@@ -192,12 +198,12 @@ public partial class GameUI : Control
         questionBackground.Color =
             new Color("#151F4A");
 
+        questionBackground.MouseFilter =
+            Control.MouseFilterEnum.Ignore;
+
         AddChild(
             questionBackground
         );
-
-        questionBackground.MouseFilter =
-            Control.MouseFilterEnum.Ignore;
 
         OperationLabel =
             new Label();
@@ -559,7 +565,7 @@ public partial class GameUI : Control
 
         for (
             int i = lives;
-            i < 3;
+            i < MaxLives;
             i++
         )
         {
@@ -569,6 +575,39 @@ public partial class GameUI : Control
 
         LivesLabel.Text =
             $"VIDAS: {hearts}";
+    }
+
+    public void UpdateMeteorHealth(
+        int health
+    )
+    {
+        if (
+            health < 0
+        )
+        {
+            health = 0;
+        }
+
+        MeteorHealthLabel.Text =
+            $"❤️ {health} / {EasyMeteorMaxHealth}";
+    }
+
+    public void ResetGameVisuals()
+    {
+        UpdateLives(
+            MaxLives
+        );
+
+        UpdateMeteorHealth(
+            EasyMeteorMaxHealth
+        );
+
+        MessageLabel.Text =
+            "";
+
+        DisableRestartButtonVisual();
+
+        HideDefeat();
     }
 
     private void SetGameButtonsEnabled(
