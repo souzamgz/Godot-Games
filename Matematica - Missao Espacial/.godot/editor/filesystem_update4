@@ -1,2 +1,6 @@
 res://Scripts/Style.cs
 res://Scripts/Main.cs
+res://Scripts/Planetas/Jupiter.cs
+res://Scripts/Planetas/Lua.cs
+res://Scripts/Planetas/Marte.cs
+res://Scripts/Planetas/Terra.cs

@@ -3,6 +3,7 @@ using Godot;
 public partial class Main : Control
 {
     private ColorRect background;
+
     private Panel startPanel;
 
     private Label titleLabel;
@@ -20,22 +21,6 @@ public partial class Main : Control
     private Button nextDifficultyButton;
 
     private int selectedPlanet = 0;
-
-    private readonly string[] planetNames =
-    {
-        "🌍 TERRA",
-        "🌙 LUA",
-        "🔴 MARTE",
-        "🟣 JÚPITER"
-    };
-
-    private readonly string[] planetOperations =
-    {
-        "+",
-        "−",
-        "×",
-        "÷"
-    };
 
     public override void _Ready()
     {
@@ -77,7 +62,9 @@ public partial class Main : Control
         background.Color =
             new Color("#080D24");
 
-        AddChild(background);
+        AddChild(
+            background
+        );
     }
 
     private void CreateStartPanel()
@@ -101,7 +88,9 @@ public partial class Main : Control
             )
         );
 
-        AddChild(startPanel);
+        AddChild(
+            startPanel
+        );
     }
 
     private void CreateTitle()
@@ -266,34 +255,11 @@ public partial class Main : Control
             20
         );
 
-        button.AddThemeStyleboxOverride(
-            "normal",
-            Style.CreateBox(
-                new Color("#18244C"),
-                new Color("#5368B7"),
-                2,
-                25
-            )
-        );
-
-        button.AddThemeStyleboxOverride(
-            "hover",
-            Style.CreateBox(
-                new Color("#27396F"),
-                new Color("#91A3F4"),
-                3,
-                25
-            )
-        );
-
-        button.AddThemeStyleboxOverride(
-            "pressed",
-            Style.CreateBox(
-                new Color("#101A3A"),
-                new Color("#A9B8FF"),
-                3,
-                25
-            )
+        Style.ApplyButtonStyle(
+            button,
+            new Color("#18244C"),
+            new Color("#27396F"),
+            new Color("#5368B7")
         );
 
         return button;
@@ -350,34 +316,11 @@ public partial class Main : Control
             28
         );
 
-        button.AddThemeStyleboxOverride(
-            "normal",
-            Style.CreateBox(
-                new Color("#18244C"),
-                new Color("#5368B7"),
-                2,
-                18
-            )
-        );
-
-        button.AddThemeStyleboxOverride(
-            "hover",
-            Style.CreateBox(
-                new Color("#27396F"),
-                new Color("#91A3F4"),
-                3,
-                18
-            )
-        );
-
-        button.AddThemeStyleboxOverride(
-            "pressed",
-            Style.CreateBox(
-                new Color("#101A3A"),
-                new Color("#B0BEFF"),
-                3,
-                18
-            )
+        Style.ApplyButtonStyle(
+            button,
+            new Color("#18244C"),
+            new Color("#27396F"),
+            new Color("#5368B7")
         );
 
         return button;
@@ -385,18 +328,10 @@ public partial class Main : Control
 
     private void PreviousDifficulty()
     {
-        // Futuramente:
-        // FÁCIL -> MÉDIO -> DIFÍCIL -> MUITO DIFÍCIL
-
-        // Por enquanto não faz nada.
     }
 
     private void NextDifficulty()
     {
-        // Futuramente:
-        // FÁCIL -> MÉDIO -> DIFÍCIL -> MUITO DIFÍCIL
-
-        // Por enquanto não faz nada.
     }
 
     private void CreateStartButton()
@@ -418,24 +353,11 @@ public partial class Main : Control
             24
         );
 
-        startButton.AddThemeStyleboxOverride(
-            "normal",
-            Style.CreateBox(
-                new Color("#3155A6"),
-                new Color("#7E95F0"),
-                3,
-                25
-            )
-        );
-
-        startButton.AddThemeStyleboxOverride(
-            "hover",
-            Style.CreateBox(
-                new Color("#4569C6"),
-                new Color("#A7B7FF"),
-                4,
-                25
-            )
+        Style.ApplyButtonStyle(
+            startButton,
+            new Color("#3155A6"),
+            new Color("#4569C6"),
+            new Color("#7E95F0")
         );
 
         startPanel.AddChild(
@@ -540,26 +462,11 @@ public partial class Main : Control
     {
         string[] stars =
         {
-            "✦",
-            "·",
-            "✧",
-            "·",
-            "✦",
-            "·",
-            "✧",
-            "·",
-            "✦",
-            "·",
-            "✧",
-            "·",
-            "✦",
-            "·",
-            "✧",
-            "·",
-            "✦",
-            "·",
-            "✧",
-            "·"
+            "✦", "·", "✧", "·",
+            "✦", "·", "✧", "·",
+            "✦", "·", "✧", "·",
+            "✦", "·", "✧", "·",
+            "✦", "·", "✧", "·"
         };
 
         Vector2[] positions =
