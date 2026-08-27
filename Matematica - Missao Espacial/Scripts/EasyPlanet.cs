@@ -5,50 +5,45 @@ using System.Threading.Tasks;
 public abstract partial class EasyPlanet : Control
 {
     protected Random random = new Random();
-
     protected GameUI ui;
-
     protected int correctAnswer;
     protected int meteorHealth;
     protected int lives;
-
     protected bool questionAnswered;
     protected bool gameOver;
 
-    // Identifica cada partida para impedir que animações
-    // antigas interfiram depois de um reinício.
-    private int gameSessionId;
+    protected int meteorsDestroyed;
+    protected const int MeteorsRequired = 3;
+    protected int missionScore;
+
+    public abstract int PlanetIndex { get; }
 
     public override void _Ready()
     {
         ui = new GameUI();
-
         AddChild(ui);
 
         ui.RestartRequested += RestartGame;
         ui.ExitRequested += ExitToMenu;
-
         ui.DefeatRestartRequested += RestartGame;
         ui.DefeatExitRequested += ExitToMenu;
+        ui.VictoryNextRequested += GoToNextPlanet;
+        ui.VictoryMenuRequested += ExitToMenu;
 
         StartGame();
     }
 
     protected virtual void StartGame()
     {
-        // Nova sessão de jogo.
-        gameSessionId++;
-
         lives = GameUI.MaxLives;
-
-        // O meteoro SEMPRE começa com a vida máxima
-        // quando uma nova partida é iniciada.
         meteorHealth = GameUI.EasyMeteorMaxHealth;
-
+        meteorsDestroyed = 0;
+        missionScore = 0;
         questionAnswered = false;
         gameOver = false;
 
         ui.ResetGameVisuals();
+        ui.HideVictory();
 
         StartQuestion();
     }
@@ -71,10 +66,7 @@ public abstract partial class EasyPlanet : Control
         GenerateOperation();
         GenerateAnswers();
 
-        // Mostra a vida ATUAL do meteoro.
-        // Não reseta a vida aqui.
         ui.UpdateMeteorHealth(meteorHealth);
-
         ui.UpdateLives(lives);
     }
 
@@ -83,7 +75,6 @@ public abstract partial class EasyPlanet : Control
     protected virtual void GenerateAnswers()
     {
         int answer1 = correctAnswer;
-
         int answer2;
         int answer3;
 
@@ -131,7 +122,6 @@ public abstract partial class EasyPlanet : Control
             int j = random.Next(i + 1);
 
             int temp = answers[i];
-
             answers[i] = answers[j];
             answers[j] = temp;
         }
@@ -170,46 +160,23 @@ public abstract partial class EasyPlanet : Control
             return;
         }
 
-        // Guarda a sessão atual.
-        // Se o jogador reiniciar durante a animação,
-        // essa execução antiga será ignorada.
-        int currentSession = gameSessionId;
-
         questionAnswered = true;
 
         ui.AnswerButton1.Disabled = true;
         ui.AnswerButton2.Disabled = true;
         ui.AnswerButton3.Disabled = true;
 
-        int selectedAnswer;
+        int selectedAnswer = int.Parse(button.Text);
 
-        if (!int.TryParse(button.Text, out selectedAnswer))
-        {
-            questionAnswered = false;
+        bool correct = selectedAnswer == correctAnswer;
 
-            ui.AnswerButton1.Disabled = false;
-            ui.AnswerButton2.Disabled = false;
-            ui.AnswerButton3.Disabled = false;
-
-            return;
-        }
-
-        bool correct =
-            selectedAnswer == correctAnswer;
-
-        // Animação do botão:
-        // verde se acertou
-        // vermelho se errou
         Task buttonAnimation =
-            Transitions.AnimateAnswer(
-                button,
-                correct
-            );
+            Transitions.AnimateAnswer(button, correct);
 
         if (correct)
         {
-            // ACERTO:
-            // causa dano no meteoro.
+            missionScore += 10;
+
             meteorHealth -=
                 GameUI.EasyDamagePerCorrectAnswer;
 
@@ -218,52 +185,33 @@ public abstract partial class EasyPlanet : Control
                 meteorHealth = 0;
             }
 
-            ui.MessageLabel.Text =
-                "🎯 Acertou!";
+            ui.MessageLabel.Text = "🎯 Acertou!";
 
-            ui.UpdateMeteorHealth(
-                meteorHealth
-            );
+            ui.UpdateMeteorHealth(meteorHealth);
         }
         else
         {
-            // ERRO:
-            // somente perde uma vida.
-            // O meteoro NÃO perde vida.
             lives--;
 
-            ui.MessageLabel.Text =
-                "💥 Ops!";
+            ui.MessageLabel.Text = "💥 Ops!";
 
-            ui.UpdateLives(
-                lives
-            );
+            ui.UpdateLives(lives);
         }
 
         await buttonAnimation;
 
-        // Se o jogador reiniciou ou saiu durante
-        // a animação, abandona esta execução antiga.
-        if (
-            gameOver ||
-            currentSession != gameSessionId
-        )
+        if (gameOver)
         {
             return;
         }
 
-        // Ataque visual.
-        // No erro ele não causa dano no meteoro.
         await Transitions.Attack(
             ui.MeteorPanel,
             button,
             correct
         );
 
-        if (
-            gameOver ||
-            currentSession != gameSessionId
-        )
+        if (gameOver)
         {
             return;
         }
@@ -273,42 +221,50 @@ public abstract partial class EasyPlanet : Control
             SceneTreeTimer.SignalName.Timeout
         );
 
-        if (
-            gameOver ||
-            currentSession != gameSessionId
-        )
-        {
-            return;
-        }
-
-        // ==========================================
-        // DERROTA
-        // ==========================================
-
         if (lives <= 0)
         {
             Defeat();
-
             return;
         }
 
-        // ==========================================
-        // METEORO DESTRUÍDO
-        // ==========================================
-
         if (meteorHealth <= 0)
         {
+            meteorsDestroyed++;
+
             ui.MessageLabel.Text =
-                "💥 Meteoro destruído!";
+                $"💥 Meteoro destruído! {meteorsDestroyed}/{MeteorsRequired}";
+
+            if (meteorsDestroyed >= MeteorsRequired)
+            {
+                await Transitions.MeteorDestroyed(
+                    ui.MeteorPanel
+                );
+
+                if (gameOver)
+                {
+                    return;
+                }
+
+                await ToSignal(
+                    GetTree().CreateTimer(0.25),
+                    SceneTreeTimer.SignalName.Timeout
+                );
+
+                if (gameOver)
+                {
+                    return;
+                }
+
+                Victory();
+
+                return;
+            }
 
             await Transitions.MeteorDestroyed(
                 ui.MeteorPanel
             );
 
-            if (
-                gameOver ||
-                currentSession != gameSessionId
-            )
+            if (gameOver)
             {
                 return;
             }
@@ -318,39 +274,56 @@ public abstract partial class EasyPlanet : Control
                 SceneTreeTimer.SignalName.Timeout
             );
 
-            if (
-                gameOver ||
-                currentSession != gameSessionId
-            )
+            if (gameOver)
             {
                 return;
             }
 
-            // ==========================================
-            // IMPORTANTE:
-            // O meteoro foi destruído.
-            // Agora criamos o próximo com VIDA CHEIA.
-            // ==========================================
-
             meteorHealth =
                 GameUI.EasyMeteorMaxHealth;
 
-            ui.UpdateMeteorHealth(
-                meteorHealth
-            );
+            ui.ResetMeteorVisual();
 
-            // Prepara uma nova questão.
-            // As vidas continuam iguais.
             StartQuestion();
 
             return;
         }
 
-        // ==========================================
-        // METEORO AINDA VIVO
-        // ==========================================
-
         StartQuestion();
+    }
+
+    private void Victory()
+    {
+        gameOver = true;
+        questionAnswered = true;
+
+        ui.AnswerButton1.Disabled = true;
+        ui.AnswerButton2.Disabled = true;
+        ui.AnswerButton3.Disabled = true;
+
+        ui.MessageLabel.Text = "";
+
+        Node current = GetParent();
+
+        while (current != null)
+        {
+            if (current is Main main)
+            {
+                main.RegisterPlanetCompletion(
+                    PlanetIndex,
+                    missionScore
+                );
+
+                break;
+            }
+
+            current = current.GetParent();
+        }
+
+        ui.ShowVictory(
+            meteorsDestroyed,
+            missionScore
+        );
     }
 
     private void Defeat()
@@ -369,21 +342,30 @@ public abstract partial class EasyPlanet : Control
 
     private void RestartGame()
     {
-        // Aumentar o ID invalida qualquer Shoot()
-        // antigo que ainda esteja esperando uma animação.
-        gameSessionId++;
-
         gameOver = false;
         questionAnswered = false;
 
         StartGame();
     }
 
+    private void GoToNextPlanet()
+    {
+        Node current = GetParent();
+
+        while (current != null)
+        {
+            if (current is Main main)
+            {
+                main.SelectNextPlanet();
+                return;
+            }
+
+            current = current.GetParent();
+        }
+    }
+
     private void ExitToMenu()
     {
-        // Invalida animações e perguntas pendentes.
-        gameSessionId++;
-
         gameOver = true;
         questionAnswered = true;
 
@@ -394,7 +376,6 @@ public abstract partial class EasyPlanet : Control
             if (current is Main main)
             {
                 main.ReturnToLobby();
-
                 return;
             }
 

@@ -2,21 +2,18 @@ using Godot;
 
 public partial class Jupiter : EasyPlanet
 {
+    public override int PlanetIndex => 3;
+
     protected override void GenerateOperation()
     {
-        int divisor =
-            random.Next(1, 10);
+        int number2 = random.Next(1, 10);
+        int result = random.Next(1, 10);
 
-        int result =
-            random.Next(1, 10);
+        int number1 = number2 * result;
 
-        int dividend =
-            divisor * result;
-
-        correctAnswer =
-            result;
+        correctAnswer = result;
 
         ui.OperationLabel.Text =
-            $"{dividend} ÷ {divisor}";
+            $"{number1} ÷ {number2}";
     }
 }
