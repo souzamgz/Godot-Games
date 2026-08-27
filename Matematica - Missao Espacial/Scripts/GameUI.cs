@@ -27,11 +27,17 @@ public partial class GameUI : Control
 
     public event Action ExitRequested;
 
-    private Panel defeatPanel;
-
     public event Action DefeatRestartRequested;
 
     public event Action DefeatExitRequested;
+
+    private Panel defeatPanel;
+
+    private ColorRect questionBackground;
+
+    private ColorRect meteorBackground;
+
+    private ColorRect defeatBackground;
 
     public override void _Ready()
     {
@@ -69,11 +75,24 @@ public partial class GameUI : Control
         RestartButton.Size =
             new Vector2(135, 45);
 
+        RestartButton.AddThemeFontSizeOverride(
+            "font_size",
+            16
+        );
+
         Style.ApplyActionButton(
             RestartButton,
             new Color("#3155A6"),
             new Color("#4569C6")
         );
+
+        RestartButton.Modulate =
+            new Color(
+                1f,
+                1f,
+                1f,
+                0.4f
+            );
 
         AddChild(
             RestartButton
@@ -94,6 +113,11 @@ public partial class GameUI : Control
         ExitButton.Size =
             new Vector2(110, 45);
 
+        ExitButton.AddThemeFontSizeOverride(
+            "font_size",
+            16
+        );
+
         Style.ApplyActionButton(
             ExitButton,
             new Color("#7A3151"),
@@ -106,6 +130,28 @@ public partial class GameUI : Control
 
         ExitButton.Pressed +=
             () => ExitRequested?.Invoke();
+    }
+
+    public void EnableRestartButton()
+    {
+        RestartButton.Modulate =
+            new Color(
+                1f,
+                1f,
+                1f,
+                1f
+            );
+    }
+
+    public void DisableRestartButtonVisual()
+    {
+        RestartButton.Modulate =
+            new Color(
+                1f,
+                1f,
+                1f,
+                0.4f
+            );
     }
 
     private void CreateLives()
@@ -134,31 +180,33 @@ public partial class GameUI : Control
 
     private void CreateQuestionPanel()
     {
-        Panel questionPanel =
-            new Panel();
+        questionBackground =
+            new ColorRect();
 
-        questionPanel.Position =
+        questionBackground.Position =
             new Vector2(350, 145);
 
-        questionPanel.Size =
+        questionBackground.Size =
             new Vector2(500, 125);
 
-        questionPanel.AddThemeStyleboxOverride(
-            "panel",
-            Style.CreateBox(
-                new Color("#151F4A"),
-                new Color("#6176D0"),
-                3,
-                30
-            )
-        );
+        questionBackground.Color =
+            new Color("#151F4A");
 
         AddChild(
-            questionPanel
+            questionBackground
         );
+
+        questionBackground.MouseFilter =
+            Control.MouseFilterEnum.Ignore;
 
         OperationLabel =
             new Label();
+
+        OperationLabel.Position =
+            new Vector2(0, 0);
+
+        OperationLabel.Size =
+            new Vector2(500, 125);
 
         OperationLabel.HorizontalAlignment =
             HorizontalAlignment.Center;
@@ -166,16 +214,12 @@ public partial class GameUI : Control
         OperationLabel.VerticalAlignment =
             VerticalAlignment.Center;
 
-        OperationLabel.SetAnchorsAndOffsetsPreset(
-            Control.LayoutPreset.FullRect
-        );
-
         OperationLabel.AddThemeFontSizeOverride(
             "font_size",
             52
         );
 
-        questionPanel.AddChild(
+        questionBackground.AddChild(
             OperationLabel
         );
     }
@@ -191,18 +235,27 @@ public partial class GameUI : Control
         MeteorPanel.Size =
             new Vector2(240, 135);
 
-        MeteorPanel.AddThemeStyleboxOverride(
-            "panel",
-            Style.CreateBox(
-                new Color("#271C43"),
-                new Color("#8060C3"),
-                3,
-                30
-            )
-        );
-
         AddChild(
             MeteorPanel
+        );
+
+        meteorBackground =
+            new ColorRect();
+
+        meteorBackground.Position =
+            new Vector2(0, 0);
+
+        meteorBackground.Size =
+            new Vector2(240, 135);
+
+        meteorBackground.Color =
+            new Color("#271C43");
+
+        meteorBackground.MouseFilter =
+            Control.MouseFilterEnum.Ignore;
+
+        MeteorPanel.AddChild(
+            meteorBackground
         );
 
         Label meteor =
@@ -289,6 +342,14 @@ public partial class GameUI : Control
         Button button =
             new Button();
 
+        button.Size =
+            new Vector2(220, 100);
+
+        button.AddThemeFontSizeOverride(
+            "font_size",
+            30
+        );
+
         Style.ApplyAnswerButton(
             button
         );
@@ -331,18 +392,27 @@ public partial class GameUI : Control
         defeatPanel.Size =
             new Vector2(600, 500);
 
-        defeatPanel.AddThemeStyleboxOverride(
-            "panel",
-            Style.CreateBox(
-                new Color("#17162F"),
-                new Color("#B94C70"),
-                4,
-                35
-            )
-        );
-
         AddChild(
             defeatPanel
+        );
+
+        defeatBackground =
+            new ColorRect();
+
+        defeatBackground.Position =
+            new Vector2(0, 0);
+
+        defeatBackground.Size =
+            new Vector2(600, 500);
+
+        defeatBackground.Color =
+            new Color("#17162F");
+
+        defeatBackground.MouseFilter =
+            Control.MouseFilterEnum.Ignore;
+
+        defeatPanel.AddChild(
+            defeatBackground
         );
 
         Label title =
