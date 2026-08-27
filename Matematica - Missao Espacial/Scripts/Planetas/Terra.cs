@@ -14,6 +14,8 @@ public partial class Terra : Control
 
     private int meteorMaxHealth;
 
+    private int lives;
+
     private int currentQuestion =
         1;
 
@@ -39,6 +41,12 @@ public partial class Terra : Control
         ui.ExitRequested +=
             ExitGame;
 
+        ui.DefeatRestartRequested +=
+            RestartGame;
+
+        ui.DefeatExitRequested +=
+            ExitGame;
+
         ui.AnswerButton1.Pressed +=
             () => Shoot(
                 ui.AnswerButton1
@@ -57,12 +65,7 @@ public partial class Terra : Control
         meteorMaxHealth =
             30;
 
-        meteorHealth =
-            meteorMaxHealth;
-
-        UpdateMeteorHealth();
-
-        GenerateNewQuestion();
+        RestartGame();
     }
 
     private void GenerateNewQuestion()
@@ -76,10 +79,6 @@ public partial class Terra : Control
 
         canAnswer =
             true;
-
-        SetAnswerButtonsEnabled(
-            true
-        );
     }
 
     private void GenerateOperation()
@@ -198,17 +197,35 @@ public partial class Terra : Control
 
             ui.MessageLabel.Text =
                 "🎯 Acertou!";
+
+            ui.MeteorHealthLabel.Text =
+                $"❤️ {meteorHealth} / {meteorMaxHealth}";
         }
         else
         {
-            meteorHealth -=
-                5;
+            lives--;
 
             ui.MessageLabel.Text =
-                "💥 Quase!";
-        }
+                "💥 Resposta errada!";
 
-        UpdateMeteorHealth();
+            ui.UpdateLives(
+                lives
+            );
+
+            await ToSignal(
+                GetTree().CreateTimer(0.5),
+                SceneTreeTimer.SignalName.Timeout
+            );
+
+            if (
+                lives <= 0
+            )
+            {
+                ShowDefeat();
+
+                return;
+            }
+        }
 
         await ToSignal(
             GetTree().CreateTimer(0.5),
@@ -231,23 +248,61 @@ public partial class Terra : Control
                 meteorMaxHealth;
 
             currentQuestion++;
-
-            UpdateMeteorHealth();
-
-            GenerateNewQuestion();
-
-            return;
         }
 
         currentQuestion++;
 
         GenerateNewQuestion();
+
+        SetAnswerButtonsEnabled(
+            true
+        );
     }
 
-    private void UpdateMeteorHealth()
+    private void ShowDefeat()
     {
+        canAnswer =
+            false;
+
+        ui.ShowDefeat();
+    }
+
+    private void RestartGame()
+    {
+        meteorHealth =
+            meteorMaxHealth;
+
+        lives =
+            3;
+
+        currentQuestion =
+            1;
+
+        ui.HideDefeat();
+
+        ui.UpdateLives(
+            lives
+        );
+
         ui.MeteorHealthLabel.Text =
             $"❤️ {meteorHealth} / {meteorMaxHealth}";
+
+        GenerateNewQuestion();
+
+        SetAnswerButtonsEnabled(
+            true
+        );
+    }
+
+    private void ExitGame()
+    {
+        Main main =
+            GetParent() as Main;
+
+        if (main != null)
+        {
+            main.ReturnToLobby();
+        }
     }
 
     private void SetAnswerButtonsEnabled(
@@ -262,29 +317,5 @@ public partial class Terra : Control
 
         ui.AnswerButton3.Disabled =
             !enabled;
-    }
-
-    private void RestartGame()
-    {
-        meteorHealth =
-            meteorMaxHealth;
-
-        currentQuestion =
-            1;
-
-        GenerateNewQuestion();
-
-        UpdateMeteorHealth();
-    }
-
-    private void ExitGame()
-    {
-        Main main =
-            GetParent() as Main;
-
-        if (main != null)
-        {
-            main.ReturnToLobby();
-        }
     }
 }

@@ -7,6 +7,8 @@ public partial class GameUI : Control
 
     public Label MeteorHealthLabel { get; private set; }
 
+    public Label LivesLabel { get; private set; }
+
     public Label MessageLabel { get; private set; }
 
     public Button AnswerButton1 { get; private set; }
@@ -25,6 +27,12 @@ public partial class GameUI : Control
 
     public event Action ExitRequested;
 
+    private Panel defeatPanel;
+
+    public event Action DefeatRestartRequested;
+
+    public event Action DefeatExitRequested;
+
     public override void _Ready()
     {
         CreateInterface();
@@ -34,6 +42,8 @@ public partial class GameUI : Control
     {
         CreateTopButtons();
 
+        CreateLives();
+
         CreateQuestionPanel();
 
         CreateMeteor();
@@ -41,6 +51,8 @@ public partial class GameUI : Control
         CreateAnswers();
 
         CreateMessage();
+
+        CreateDefeatPanel();
     }
 
     private void CreateTopButtons()
@@ -49,7 +61,7 @@ public partial class GameUI : Control
             new Button();
 
         RestartButton.Text =
-            "🔄 REINICIAR";
+            "REINICIAR";
 
         RestartButton.Position =
             new Vector2(900, 25);
@@ -74,7 +86,7 @@ public partial class GameUI : Control
             new Button();
 
         ExitButton.Text =
-            "🚪 SAIR";
+            "SAIR";
 
         ExitButton.Position =
             new Vector2(1045, 25);
@@ -94,6 +106,30 @@ public partial class GameUI : Control
 
         ExitButton.Pressed +=
             () => ExitRequested?.Invoke();
+    }
+
+    private void CreateLives()
+    {
+        LivesLabel =
+            new Label();
+
+        LivesLabel.Text =
+            "VIDAS: ❤️ ❤️ ❤️";
+
+        LivesLabel.Position =
+            new Vector2(30, 25);
+
+        LivesLabel.Size =
+            new Vector2(300, 45);
+
+        LivesLabel.AddThemeFontSizeOverride(
+            "font_size",
+            22
+        );
+
+        AddChild(
+            LivesLabel
+        );
     }
 
     private void CreateQuestionPanel()
@@ -282,5 +318,206 @@ public partial class GameUI : Control
         AddChild(
             MessageLabel
         );
+    }
+
+    private void CreateDefeatPanel()
+    {
+        defeatPanel =
+            new Panel();
+
+        defeatPanel.Position =
+            new Vector2(300, 120);
+
+        defeatPanel.Size =
+            new Vector2(600, 500);
+
+        defeatPanel.AddThemeStyleboxOverride(
+            "panel",
+            Style.CreateBox(
+                new Color("#17162F"),
+                new Color("#B94C70"),
+                4,
+                35
+            )
+        );
+
+        AddChild(
+            defeatPanel
+        );
+
+        Label title =
+            new Label();
+
+        title.Text =
+            "DERROTA";
+
+        title.HorizontalAlignment =
+            HorizontalAlignment.Center;
+
+        title.Position =
+            new Vector2(40, 55);
+
+        title.Size =
+            new Vector2(520, 70);
+
+        title.AddThemeFontSizeOverride(
+            "font_size",
+            42
+        );
+
+        defeatPanel.AddChild(
+            title
+        );
+
+        Label message =
+            new Label();
+
+        message.Text =
+            "Você ficou sem vidas!\nTente novamente para continuar sua missão.";
+
+        message.HorizontalAlignment =
+            HorizontalAlignment.Center;
+
+        message.VerticalAlignment =
+            VerticalAlignment.Center;
+
+        message.Position =
+            new Vector2(50, 140);
+
+        message.Size =
+            new Vector2(500, 100);
+
+        message.AddThemeFontSizeOverride(
+            "font_size",
+            21
+        );
+
+        defeatPanel.AddChild(
+            message
+        );
+
+        Button restart =
+            new Button();
+
+        restart.Text =
+            "REINICIAR";
+
+        restart.Position =
+            new Vector2(95, 310);
+
+        restart.Size =
+            new Vector2(190, 70);
+
+        Style.ApplyActionButton(
+            restart,
+            new Color("#3155A6"),
+            new Color("#4569C6")
+        );
+
+        defeatPanel.AddChild(
+            restart
+        );
+
+        restart.Pressed +=
+            () => DefeatRestartRequested?.Invoke();
+
+        Button exit =
+            new Button();
+
+        exit.Text =
+            "SAIR";
+
+        exit.Position =
+            new Vector2(315, 310);
+
+        exit.Size =
+            new Vector2(190, 70);
+
+        Style.ApplyActionButton(
+            exit,
+            new Color("#7A3151"),
+            new Color("#A9446B")
+        );
+
+        defeatPanel.AddChild(
+            exit
+        );
+
+        exit.Pressed +=
+            () => DefeatExitRequested?.Invoke();
+
+        defeatPanel.Visible =
+            false;
+    }
+
+    public void ShowDefeat()
+    {
+        defeatPanel.Visible =
+            true;
+
+        SetGameButtonsEnabled(
+            false
+        );
+    }
+
+    public void HideDefeat()
+    {
+        defeatPanel.Visible =
+            false;
+
+        SetGameButtonsEnabled(
+            true
+        );
+    }
+
+    public void UpdateLives(
+        int lives
+    )
+    {
+        string hearts =
+            "";
+
+        for (
+            int i = 0;
+            i < lives;
+            i++
+        )
+        {
+            hearts +=
+                "❤️ ";
+        }
+
+        for (
+            int i = lives;
+            i < 3;
+            i++
+        )
+        {
+            hearts +=
+                "🖤 ";
+        }
+
+        LivesLabel.Text =
+            $"VIDAS: {hearts}";
+    }
+
+    private void SetGameButtonsEnabled(
+        bool enabled
+    )
+    {
+        AnswerButton1.Disabled =
+            !enabled;
+
+        AnswerButton2.Disabled =
+            !enabled;
+
+        AnswerButton3.Disabled =
+            !enabled;
+
+        RestartButton.Disabled =
+            !enabled;
+
+        ExitButton.Disabled =
+            !enabled;
     }
 }
