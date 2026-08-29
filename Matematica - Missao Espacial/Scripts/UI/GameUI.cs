@@ -59,7 +59,7 @@ public partial class GameUI : Control
             "REINICIAR",
             new Vector2(900, 25),
             new Vector2(135, 45),
-            new Color("#27346B")
+            Style.AnswerButtonColor
         );
 
         AddChild(RestartButton);
@@ -70,7 +70,7 @@ public partial class GameUI : Control
             "SAIR",
             new Vector2(1045, 25),
             new Vector2(110, 45),
-            new Color("#A9446B")
+            Style.ExitButtonColor
         );
 
         AddChild(ExitButton);
@@ -91,15 +91,17 @@ public partial class GameUI : Control
         button.Position = position;
         button.Size = size;
 
-        button.AddThemeFontSizeOverride(
-            "font_size",
+        Style.SetFontSize(
+            button,
             16
         );
 
-        ApplyButtonTheme(
+        Style.ApplyButtonStyle(
             button,
             color,
-            new Color("#AFC0FF")
+            Style.ButtonSelectedBorderColor,
+            color.Lightened(0.15f),
+            3
         );
 
         return button;
@@ -109,12 +111,17 @@ public partial class GameUI : Control
     {
         LivesLabel = new Label();
 
-        LivesLabel.Text = "VIDAS: ❤️ ❤️ ❤️";
-        LivesLabel.Position = new Vector2(30, 25);
-        LivesLabel.Size = new Vector2(300, 45);
+        LivesLabel.Text =
+            "VIDAS: ❤️ ❤️ ❤️";
 
-        LivesLabel.AddThemeFontSizeOverride(
-            "font_size",
+        LivesLabel.Position =
+            new Vector2(30, 25);
+
+        LivesLabel.Size =
+            new Vector2(300, 45);
+
+        Style.SetFontSize(
+            LivesLabel,
             22
         );
 
@@ -123,96 +130,126 @@ public partial class GameUI : Control
 
     private void CreateQuestionPanel()
     {
-        Panel questionPanel = new Panel();
+        Panel questionPanel =
+            new Panel();
 
-        questionPanel.Position = new Vector2(350, 145);
-        questionPanel.Size = new Vector2(500, 125);
+        questionPanel.Position =
+            new Vector2(350, 145);
 
-        ApplyPanelTheme(
-            questionPanel,
-            new Color("#151F4A"),
-            new Color("#6176D0")
+        questionPanel.Size =
+            new Vector2(500, 125);
+
+        Style.ApplyQuestionPanelStyle(
+            questionPanel
         );
 
         AddChild(questionPanel);
 
-        OperationLabel = new Label();
+        OperationLabel =
+            new Label();
 
-        OperationLabel.HorizontalAlignment =
-            HorizontalAlignment.Center;
-
-        OperationLabel.VerticalAlignment =
-            VerticalAlignment.Center;
+        Style.CenterLabel(
+            OperationLabel
+        );
 
         OperationLabel.SetAnchorsAndOffsetsPreset(
             Control.LayoutPreset.FullRect
         );
 
-        OperationLabel.AddThemeFontSizeOverride(
-            "font_size",
+        Style.SetFontSize(
+            OperationLabel,
             52
         );
 
-        questionPanel.AddChild(OperationLabel);
+        questionPanel.AddChild(
+            OperationLabel
+        );
     }
 
     private void CreateMeteor()
     {
-        MeteorPanel = new Panel();
+        MeteorPanel =
+            new Panel();
 
-        MeteorPanel.Position = new Vector2(480, 295);
-        MeteorPanel.Size = new Vector2(240, 135);
+        MeteorPanel.Position =
+            new Vector2(480, 295);
 
-        ApplyPanelTheme(
-            MeteorPanel,
-            new Color("#271C43"),
-            new Color("#8060C3")
+        MeteorPanel.Size =
+            new Vector2(240, 135);
+
+        Style.ApplyMeteorPanelStyle(
+            MeteorPanel
         );
 
         AddChild(MeteorPanel);
 
-        Label meteor = new Label();
+        Label meteor =
+            new Label();
 
-        meteor.Text = "☄️";
+        meteor.Text =
+            "☄️";
 
-        meteor.HorizontalAlignment =
-            HorizontalAlignment.Center;
+        Style.CenterLabel(
+            meteor
+        );
 
-        meteor.Position = new Vector2(20, 5);
-        meteor.Size = new Vector2(200, 60);
+        meteor.Position =
+            new Vector2(20, 5);
 
-        meteor.AddThemeFontSizeOverride(
-            "font_size",
+        meteor.Size =
+            new Vector2(200, 60);
+
+        Style.SetFontSize(
+            meteor,
             44
         );
 
-        MeteorPanel.AddChild(meteor);
+        MeteorPanel.AddChild(
+            meteor
+        );
 
-        MeteorHealthLabel = new Label();
+        MeteorHealthLabel =
+            new Label();
 
-        MeteorHealthLabel.HorizontalAlignment =
-            HorizontalAlignment.Center;
+        Style.CenterLabel(
+            MeteorHealthLabel
+        );
 
-        MeteorHealthLabel.Position = new Vector2(10, 70);
-        MeteorHealthLabel.Size = new Vector2(220, 40);
+        MeteorHealthLabel.Position =
+            new Vector2(10, 70);
 
-        MeteorHealthLabel.AddThemeFontSizeOverride(
-            "font_size",
+        MeteorHealthLabel.Size =
+            new Vector2(220, 40);
+
+        Style.SetFontSize(
+            MeteorHealthLabel,
             20
         );
 
-        MeteorPanel.AddChild(MeteorHealthLabel);
+        MeteorPanel.AddChild(
+            MeteorHealthLabel
+        );
     }
 
     private void CreateAnswers()
     {
-        AnswerButton1 = CreateAnswerButton();
-        AnswerButton2 = CreateAnswerButton();
-        AnswerButton3 = CreateAnswerButton();
+        AnswerButton1 =
+            CreateAnswerButton();
 
-        AnswerButton1.Position = new Vector2(145, 505);
-        AnswerButton2.Position = new Vector2(490, 505);
-        AnswerButton3.Position = new Vector2(835, 505);
+        AnswerButton2 =
+            CreateAnswerButton();
+
+        AnswerButton3 =
+            CreateAnswerButton();
+
+        AnswerButton1.Position =
+            new Vector2(145, 505);
+
+        AnswerButton2.Position =
+            new Vector2(490, 505);
+
+        AnswerButton3.Position =
+            new Vector2(835, 505);
 
         AddChild(AnswerButton1);
         AddChild(AnswerButton2);
@@ -221,19 +258,19 @@ public partial class GameUI : Control
 
     private Button CreateAnswerButton()
     {
-        Button button = new Button();
+        Button button =
+            new Button();
 
-        button.Size = new Vector2(220, 100);
+        button.Size =
+            new Vector2(220, 100);
 
-        button.AddThemeFontSizeOverride(
-            "font_size",
+        Style.SetFontSize(
+            button,
             30
         );
 
-        ApplyButtonTheme(
-            button,
-            new Color("#27346B"),
-            new Color("#657BD2")
+        Style.ApplyAnswerButtonStyle(
+            button
         );
 
         return button;
@@ -241,16 +278,20 @@ public partial class GameUI : Control
 
     private void CreateMessage()
     {
-        MessageLabel = new Label();
+        MessageLabel =
+            new Label();
 
-        MessageLabel.Position = new Vector2(200, 620);
-        MessageLabel.Size = new Vector2(800, 60);
+        MessageLabel.Position =
+            new Vector2(200, 620);
+
+        MessageLabel.Size =
+            new Vector2(800, 60);
 
         MessageLabel.HorizontalAlignment =
             HorizontalAlignment.Center;
 
-        MessageLabel.AddThemeFontSizeOverride(
-            "font_size",
+        Style.SetFontSize(
+            MessageLabel,
             23
         );
 
@@ -259,74 +300,94 @@ public partial class GameUI : Control
 
     private void CreateDefeatPanel()
     {
-        defeatPanel = new Panel();
+        defeatPanel =
+            new Panel();
 
-        defeatPanel.Position = new Vector2(300, 120);
-        defeatPanel.Size = new Vector2(600, 500);
+        defeatPanel.Position =
+            new Vector2(300, 120);
 
-        ApplyPanelTheme(
-            defeatPanel,
-            new Color("#351C3D"),
-            new Color("#B85C9A")
+        defeatPanel.Size =
+            new Vector2(600, 500);
+
+        Style.ApplyDefeatPanelStyle(
+            defeatPanel
         );
 
         AddChild(defeatPanel);
 
-        Label title = new Label();
+        Label title =
+            new Label();
 
-        title.Text = "DERROTA";
+        title.Text =
+            "DERROTA";
+
         title.HorizontalAlignment =
             HorizontalAlignment.Center;
 
-        title.Position = new Vector2(40, 55);
-        title.Size = new Vector2(520, 70);
+        title.Position =
+            new Vector2(40, 55);
 
-        title.AddThemeFontSizeOverride(
-            "font_size",
+        title.Size =
+            new Vector2(520, 70);
+
+        Style.SetFontSize(
+            title,
             42
         );
 
-        defeatPanel.AddChild(title);
+        defeatPanel.AddChild(
+            title
+        );
 
-        Label message = new Label();
+        Label message =
+            new Label();
 
         message.Text =
             "Você ficou sem vidas!\nTente novamente para continuar sua missão.";
 
-        message.HorizontalAlignment =
-            HorizontalAlignment.Center;
+        Style.CenterLabel(
+            message
+        );
 
-        message.VerticalAlignment =
-            VerticalAlignment.Center;
+        message.Position =
+            new Vector2(50, 140);
 
-        message.Position = new Vector2(50, 140);
-        message.Size = new Vector2(500, 100);
+        message.Size =
+            new Vector2(500, 100);
 
-        message.AddThemeFontSizeOverride(
-            "font_size",
+        Style.SetFontSize(
+            message,
             21
         );
 
-        defeatPanel.AddChild(message);
-
-        defeatRestartButton = CreateDefeatButton(
-            "REINICIAR",
-            new Vector2(95, 310),
-            new Color("#3155A6")
+        defeatPanel.AddChild(
+            message
         );
 
-        defeatPanel.AddChild(defeatRestartButton);
+        defeatRestartButton =
+            CreateDefeatButton(
+                "REINICIAR",
+                new Vector2(95, 310),
+                Style.StartButtonColor
+            );
+
+        defeatPanel.AddChild(
+            defeatRestartButton
+        );
 
         defeatRestartButton.Pressed +=
             OnDefeatRestartPressed;
 
-        defeatExitButton = CreateDefeatButton(
-            "SAIR",
-            new Vector2(315, 310),
-            new Color("#A9446B")
-        );
+        defeatExitButton =
+            CreateDefeatButton(
+                "SAIR",
+                new Vector2(315, 310),
+                Style.ExitButtonColor
+            );
 
-        defeatPanel.AddChild(defeatExitButton);
+        defeatPanel.AddChild(
+            defeatExitButton
+        );
 
         defeatExitButton.Pressed +=
             OnDefeatExitPressed;
@@ -336,72 +397,91 @@ public partial class GameUI : Control
 
     private void CreateVictoryPanel()
     {
-        victoryPanel = new Panel();
+        victoryPanel =
+            new Panel();
 
-        victoryPanel.Position = new Vector2(300, 120);
-        victoryPanel.Size = new Vector2(600, 500);
+        victoryPanel.Position =
+            new Vector2(300, 120);
 
-        ApplyPanelTheme(
-            victoryPanel,
-            new Color("#183B38"),
-            new Color("#5BC7A6")
+        victoryPanel.Size =
+            new Vector2(600, 500);
+
+        Style.ApplyVictoryPanelStyle(
+            victoryPanel
         );
 
         AddChild(victoryPanel);
 
-        Label title = new Label();
+        Label title =
+            new Label();
 
-        title.Text = "🎉 MISSÃO CONCLUÍDA!";
+        title.Text =
+            "🎉 MISSÃO CONCLUÍDA!";
 
         title.HorizontalAlignment =
             HorizontalAlignment.Center;
 
-        title.Position = new Vector2(40, 45);
-        title.Size = new Vector2(520, 70);
+        title.Position =
+            new Vector2(40, 45);
 
-        title.AddThemeFontSizeOverride(
-            "font_size",
+        title.Size =
+            new Vector2(520, 70);
+
+        Style.SetFontSize(
+            title,
             34
         );
 
-        victoryPanel.AddChild(title);
+        victoryPanel.AddChild(
+            title
+        );
 
-        Label message = new Label();
+        Label message =
+            new Label();
 
-        message.HorizontalAlignment =
-            HorizontalAlignment.Center;
+        Style.CenterLabel(
+            message
+        );
 
-        message.VerticalAlignment =
-            VerticalAlignment.Center;
+        message.Position =
+            new Vector2(50, 135);
 
-        message.Position = new Vector2(50, 135);
-        message.Size = new Vector2(500, 130);
+        message.Size =
+            new Vector2(500, 130);
 
-        message.AddThemeFontSizeOverride(
-            "font_size",
+        Style.SetFontSize(
+            message,
             22
         );
 
-        victoryPanel.AddChild(message);
-
-        victoryNextButton = CreateDefeatButton(
-            "PRÓXIMO PLANETA",
-            new Vector2(65, 330),
-            new Color("#3155A6")
+        victoryPanel.AddChild(
+            message
         );
 
-        victoryPanel.AddChild(victoryNextButton);
+        victoryNextButton =
+            CreateDefeatButton(
+                "PRÓXIMO PLANETA",
+                new Vector2(65, 330),
+                Style.StartButtonColor
+            );
+
+        victoryPanel.AddChild(
+            victoryNextButton
+        );
 
         victoryNextButton.Pressed +=
             OnVictoryNextPressed;
 
-        victoryMenuButton = CreateDefeatButton(
-            "PLANETAS",
-            new Vector2(345, 330),
-            new Color("#7A3151")
-        );
+        victoryMenuButton =
+            CreateDefeatButton(
+                "PLANETAS",
+                new Vector2(345, 330),
+                Style.ExitButtonColor
+            );
 
-        victoryPanel.AddChild(victoryMenuButton);
+        victoryPanel.AddChild(
+            victoryMenuButton
+        );
 
         victoryMenuButton.Pressed +=
             OnVictoryMenuPressed;
@@ -415,136 +495,32 @@ public partial class GameUI : Control
         Color color
     )
     {
-        Button button = new Button();
+        Button button =
+            new Button();
 
-        button.Text = text;
-        button.Position = position;
-        button.Size = new Vector2(190, 70);
+        button.Text =
+            text;
 
-        button.AddThemeFontSizeOverride(
-            "font_size",
+        button.Position =
+            position;
+
+        button.Size =
+            new Vector2(190, 70);
+
+        Style.SetFontSize(
+            button,
             19
         );
 
-        ApplyButtonTheme(
+        Style.ApplyButtonStyle(
             button,
             color,
-            new Color("#AFC0FF")
+            Style.ButtonSelectedBorderColor,
+            color.Lightened(0.15f),
+            3
         );
 
         return button;
-    }
-
-    private void ApplyButtonTheme(
-        Button button,
-        Color normalColor,
-        Color borderColor
-    )
-    {
-        Theme theme = new Theme();
-
-        StyleBoxFlat normal = CreateBox(
-            normalColor,
-            borderColor,
-            3,
-            25
-        );
-
-        StyleBoxFlat hover = CreateBox(
-            normalColor.Lightened(0.15f),
-            borderColor.Lightened(0.15f),
-            4,
-            25
-        );
-
-        StyleBoxFlat pressed = CreateBox(
-            normalColor.Darkened(0.12f),
-            borderColor,
-            4,
-            25
-        );
-
-        StyleBoxFlat disabled = CreateBox(
-            normalColor.Darkened(0.35f),
-            borderColor.Darkened(0.25f),
-            2,
-            25
-        );
-
-        theme.SetStylebox(
-            "normal",
-            "Button",
-            normal
-        );
-
-        theme.SetStylebox(
-            "hover",
-            "Button",
-            hover
-        );
-
-        theme.SetStylebox(
-            "pressed",
-            "Button",
-            pressed
-        );
-
-        theme.SetStylebox(
-            "disabled",
-            "Button",
-            disabled
-        );
-
-        button.Theme = theme;
-    }
-
-    private void ApplyPanelTheme(
-        Panel panel,
-        Color backgroundColor,
-        Color borderColor
-    )
-    {
-        Theme theme = new Theme();
-
-        StyleBoxFlat panelStyle = CreateBox(
-            backgroundColor,
-            borderColor,
-            3,
-            30
-        );
-
-        theme.SetStylebox(
-            "panel",
-            "Panel",
-            panelStyle
-        );
-
-        panel.Theme = theme;
-    }
-
-    private StyleBoxFlat CreateBox(
-        Color backgroundColor,
-        Color borderColor,
-        int borderWidth,
-        int cornerRadius
-    )
-    {
-        StyleBoxFlat style = new StyleBoxFlat();
-
-        style.BgColor = backgroundColor;
-        style.BorderColor = borderColor;
-
-        style.BorderWidthLeft = borderWidth;
-        style.BorderWidthRight = borderWidth;
-        style.BorderWidthTop = borderWidth;
-        style.BorderWidthBottom = borderWidth;
-
-        style.CornerRadiusTopLeft = cornerRadius;
-        style.CornerRadiusTopRight = cornerRadius;
-        style.CornerRadiusBottomLeft = cornerRadius;
-        style.CornerRadiusBottomRight = cornerRadius;
-
-        return style;
     }
 
     private void OnRestartPressed()
@@ -618,7 +594,9 @@ public partial class GameUI : Control
             GetChildCount() - 1
         );
 
-        victoryPanel.GetChild<Label>(1).Text =
+        victoryPanel
+            .GetChild<Label>(1)
+            .Text =
             $"Você destruiu {meteorsDestroyed} meteoros!\n\n" +
             $"⭐ Pontuação da missão: {score}";
 
@@ -635,22 +613,33 @@ public partial class GameUI : Control
         victoryPanel.Visible = false;
     }
 
-    public void UpdateLives(int lives)
+    public void UpdateLives(
+        int lives
+    )
     {
-        lives = Mathf.Clamp(
-            lives,
-            0,
-            MaxLives
-        );
+        lives =
+            Mathf.Clamp(
+                lives,
+                0,
+                MaxLives
+            );
 
         string hearts = "";
 
-        for (int i = 0; i < lives; i++)
+        for (
+            int i = 0;
+            i < lives;
+            i++
+        )
         {
             hearts += "❤️ ";
         }
 
-        for (int i = lives; i < MaxLives; i++)
+        for (
+            int i = lives;
+            i < MaxLives;
+            i++
+        )
         {
             hearts += "🖤 ";
         }
@@ -659,13 +648,16 @@ public partial class GameUI : Control
             $"VIDAS: {hearts}";
     }
 
-    public void UpdateMeteorHealth(int health)
+    public void UpdateMeteorHealth(
+        int health
+    )
     {
-        health = Mathf.Clamp(
-            health,
-            0,
-            EasyMeteorMaxHealth
-        );
+        health =
+            Mathf.Clamp(
+                health,
+                0,
+                EasyMeteorMaxHealth
+            );
 
         MeteorHealthLabel.Text =
             $"❤️ {health} / {EasyMeteorMaxHealth}";
@@ -674,14 +666,23 @@ public partial class GameUI : Control
     public void ResetMeteorVisual()
     {
         MeteorPanel.Visible = true;
-        MeteorPanel.Scale = Vector2.One;
-        MeteorPanel.Modulate = Colors.White;
+
+        MeteorPanel.Scale =
+            Vector2.One;
+
+        MeteorPanel.Modulate =
+            Colors.White;
     }
 
     public void ResetGameVisuals()
     {
-        UpdateLives(MaxLives);
-        UpdateMeteorHealth(EasyMeteorMaxHealth);
+        UpdateLives(
+            MaxLives
+        );
+
+        UpdateMeteorHealth(
+            EasyMeteorMaxHealth
+        );
 
         MessageLabel.Text = "";
 
@@ -689,16 +690,30 @@ public partial class GameUI : Control
         HideVictory();
 
         MeteorPanel.Visible = true;
-        MeteorPanel.Scale = Vector2.One;
-        MeteorPanel.Modulate = Colors.White;
 
-        AnswerButton1.Modulate = Colors.White;
-        AnswerButton2.Modulate = Colors.White;
-        AnswerButton3.Modulate = Colors.White;
+        MeteorPanel.Scale =
+            Vector2.One;
 
-        AnswerButton1.Scale = Vector2.One;
-        AnswerButton2.Scale = Vector2.One;
-        AnswerButton3.Scale = Vector2.One;
+        MeteorPanel.Modulate =
+            Colors.White;
+
+        AnswerButton1.Modulate =
+            Colors.White;
+
+        AnswerButton2.Modulate =
+            Colors.White;
+
+        AnswerButton3.Modulate =
+            Colors.White;
+
+        AnswerButton1.Scale =
+            Vector2.One;
+
+        AnswerButton2.Scale =
+            Vector2.One;
+
+        AnswerButton3.Scale =
+            Vector2.One;
 
         AnswerButton1.Position =
             new Vector2(145, 505);

@@ -88,19 +88,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DEV-01\\.nuget\\packages\\": {}
+    "C:\\Users\\lue\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\DEV-01\\Desktop\\Godot-Games\\Matematica - Missao Espacial\\MatematicaNave.csproj",
+      "projectUniqueName": "C:\\Users\\lue\\Desktop\\Godot-Games\\Matematica - Missao Espacial\\MatematicaNave.csproj",
       "projectName": "MatematicaNave",
-      "projectPath": "C:\\Users\\DEV-01\\Desktop\\Godot-Games\\Matematica - Missao Espacial\\MatematicaNave.csproj",
-      "packagesPath": "C:\\Users\\DEV-01\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\DEV-01\\Desktop\\Godot-Games\\Matematica - Missao Espacial\\.godot\\mono\\temp\\obj\\",
+      "projectPath": "C:\\Users\\lue\\Desktop\\Godot-Games\\Matematica - Missao Espacial\\MatematicaNave.csproj",
+      "packagesPath": "C:\\Users\\lue\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\lue\\Desktop\\Godot-Games\\Matematica - Missao Espacial\\.godot\\mono\\temp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\DEV-01\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\lue\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
