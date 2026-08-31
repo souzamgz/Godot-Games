@@ -3,14 +3,15 @@ using System;
 
 public partial class Main : Control
 {
-    private const int PlanetCount = 4;
+    private const int PlanetCount = 5;
 
     private readonly string[] planetNames =
     {
         "🌍 TERRA",
         "🌙 LUA",
         "🔴 MARTE",
-        "🟣 JÚPITER"
+        "🟣 JÚPITER",
+        "🌌 BOSS"
     };
 
     private readonly string[] planetButtonsText =
@@ -18,11 +19,13 @@ public partial class Main : Control
         "🌍\nTERRA\n+",
         "🌙\nLUA\n−",
         "🔴\nMARTE\n×",
-        "🟣\nJÚPITER\n÷"
+        "🟣\nJÚPITER\n÷",
+        "🌌\nBOSS\n★"
     };
 
     private static readonly bool[] planetCompleted =
     {
+        false,
         false,
         false,
         false,
@@ -34,6 +37,7 @@ public partial class Main : Control
         0,
         0,
         0,
+        0,
         0
     };
 
@@ -42,16 +46,25 @@ public partial class Main : Control
         0,
         0,
         0,
+        0,
         0
     };
 
     private ColorRect background;
+
+    private Panel introPanel;
     private Panel startPanel;
+
+    private Label introTitleLabel;
+    private Label introSubtitleLabel;
 
     private Label titleLabel;
     private Label subtitleLabel;
     private Label difficultyLabel;
     private Label selectedPlanetLabel;
+
+    private Button introStartButton;
+    private Button introExitButton;
 
     private Button startButton;
     private Button exitButton;
@@ -60,6 +73,7 @@ public partial class Main : Control
     private Button planetButton2;
     private Button planetButton3;
     private Button planetButton4;
+    private Button planetButton5;
 
     private Button previousDifficultyButton;
     private Button nextDifficultyButton;
@@ -68,29 +82,14 @@ public partial class Main : Control
 
     public override void _Ready()
     {
-        CreateLobby();
-        SelectPlanet(0);
-    }
-
-    private void CreateLobby()
-    {
         CreateBackground();
         CreateStars();
-        CreateStartPanel();
-        CreateTitle();
-        CreateSubtitle();
-        CreateDifficulty();
-        CreatePlanetButtons();
-        CreateDifficultyButtons();
-        CreateSelectedPlanetLabel();
-        CreateStartButton();
-        CreateExitButton();
+        CreateIntroScreen();
     }
 
     private void CreateBackground()
     {
-        background =
-            new ColorRect();
+        background = new ColorRect();
 
         background.SetAnchorsAndOffsetsPreset(
             Control.LayoutPreset.FullRect
@@ -103,16 +102,149 @@ public partial class Main : Control
         MoveChild(background, 0);
     }
 
-    private void CreateStartPanel()
+    private void CreateIntroScreen()
     {
-        startPanel =
-            new Panel();
+        introPanel = new Panel();
+
+        introPanel.Position =
+            new Vector2(260, 120);
+
+        introPanel.Size =
+            new Vector2(680, 440);
+
+        Style.ApplyIntroPanelStyle(
+            introPanel
+        );
+
+        AddChild(introPanel);
+
+        introTitleLabel = new Label();
+
+        introTitleLabel.Text =
+            "🚀 MISSÃO ESPACIAL";
+
+        Style.CenterLabel(
+            introTitleLabel
+        );
+
+        introTitleLabel.Position =
+            new Vector2(40, 55);
+
+        introTitleLabel.Size =
+            new Vector2(600, 90);
+
+        Style.SetFontSize(
+            introTitleLabel,
+            44
+        );
+
+        introPanel.AddChild(
+            introTitleLabel
+        );
+
+        introSubtitleLabel = new Label();
+
+        introSubtitleLabel.Text =
+            "Prepare-se para uma aventura\n" +
+            "pelo Sistema Solar!";
+
+        Style.CenterLabel(
+            introSubtitleLabel
+        );
+
+        introSubtitleLabel.Position =
+            new Vector2(60, 155);
+
+        introSubtitleLabel.Size =
+            new Vector2(560, 100);
+
+        Style.SetFontSize(
+            introSubtitleLabel,
+            25
+        );
+
+        introPanel.AddChild(
+            introSubtitleLabel
+        );
+
+        introStartButton = new Button();
+
+        introStartButton.Text =
+            "COMEÇAR MISSÃO";
+
+        introStartButton.Position =
+            new Vector2(130, 300);
+
+        introStartButton.Size =
+            new Vector2(260, 70);
+
+        Style.SetFontSize(
+            introStartButton,
+            22
+        );
+
+        Style.ApplyIntroStartButtonStyle(
+            introStartButton
+        );
+
+        introPanel.AddChild(
+            introStartButton
+        );
+
+        introStartButton.Pressed += OpenLobby;
+
+        introExitButton = new Button();
+
+        introExitButton.Text =
+            "SAIR";
+
+        introExitButton.Position =
+            new Vector2(420, 300);
+
+        introExitButton.Size =
+            new Vector2(130, 70);
+
+        Style.SetFontSize(
+            introExitButton,
+            20
+        );
+
+        Style.ApplyExitButtonStyle(
+            introExitButton
+        );
+
+        introPanel.AddChild(
+            introExitButton
+        );
+
+        introExitButton.Pressed += ExitGame;
+    }
+
+    private void OpenLobby()
+    {
+        introPanel.Visible = false;
+
+        CreateLobby();
+
+        selectedPlanet = 0;
+
+        UpdatePlanetVisuals();
+    }
+
+    private void CreateLobby()
+    {
+        if (startPanel != null)
+        {
+            startPanel.QueueFree();
+        }
+
+        startPanel = new Panel();
 
         startPanel.Position =
-            new Vector2(180, 70);
+            new Vector2(100, 55);
 
         startPanel.Size =
-            new Vector2(920, 600);
+            new Vector2(1040, 620);
 
         Style.ApplyPanelStyle(
             startPanel,
@@ -121,12 +253,20 @@ public partial class Main : Control
         );
 
         AddChild(startPanel);
+
+        CreateTitle();
+        CreateSubtitle();
+        CreateDifficulty();
+        CreatePlanetButtons();
+        CreateDifficultyButtons();
+        CreateSelectedPlanetLabel();
+        CreateStartButton();
+        CreateExitButton();
     }
 
     private void CreateTitle()
     {
-        titleLabel =
-            new Label();
+        titleLabel = new Label();
 
         titleLabel.Text =
             "MISSÃO ESPACIAL";
@@ -136,14 +276,14 @@ public partial class Main : Control
         );
 
         titleLabel.Position =
-            new Vector2(40, 35);
+            new Vector2(40, 25);
 
         titleLabel.Size =
-            new Vector2(840, 80);
+            new Vector2(960, 70);
 
         Style.SetFontSize(
             titleLabel,
-            44
+            40
         );
 
         startPanel.AddChild(
@@ -153,8 +293,7 @@ public partial class Main : Control
 
     private void CreateSubtitle()
     {
-        subtitleLabel =
-            new Label();
+        subtitleLabel = new Label();
 
         subtitleLabel.Text =
             "Escolha um planeta para iniciar sua missão";
@@ -164,14 +303,14 @@ public partial class Main : Control
         );
 
         subtitleLabel.Position =
-            new Vector2(40, 105);
+            new Vector2(40, 90);
 
         subtitleLabel.Size =
-            new Vector2(840, 45);
+            new Vector2(960, 40);
 
         Style.SetFontSize(
             subtitleLabel,
-            21
+            20
         );
 
         startPanel.AddChild(
@@ -181,25 +320,24 @@ public partial class Main : Control
 
     private void CreateDifficulty()
     {
-        difficultyLabel =
-            new Label();
+        difficultyLabel = new Label();
 
         difficultyLabel.Text =
-            "FÁCIL";
+            "MODO FÁCIL";
 
         Style.CenterLabel(
             difficultyLabel
         );
 
         difficultyLabel.Position =
-            new Vector2(40, 155);
+            new Vector2(40, 130);
 
         difficultyLabel.Size =
-            new Vector2(840, 45);
+            new Vector2(960, 40);
 
         Style.SetFontSize(
             difficultyLabel,
-            27
+            25
         );
 
         startPanel.AddChild(
@@ -229,17 +367,25 @@ public partial class Main : Control
                 planetButtonsText[3]
             );
 
+        planetButton5 =
+            CreateBossButton(
+                planetButtonsText[4]
+            );
+
         planetButton1.Position =
-            new Vector2(80, 210);
+            new Vector2(35, 185);
 
         planetButton2.Position =
-            new Vector2(285, 210);
+            new Vector2(235, 185);
 
         planetButton3.Position =
-            new Vector2(490, 210);
+            new Vector2(435, 185);
 
         planetButton4.Position =
-            new Vector2(695, 210);
+            new Vector2(635, 185);
+
+        planetButton5.Position =
+            new Vector2(835, 185);
 
         startPanel.AddChild(
             planetButton1
@@ -257,6 +403,10 @@ public partial class Main : Control
             planetButton4
         );
 
+        startPanel.AddChild(
+            planetButton5
+        );
+
         planetButton1.Pressed +=
             () => SelectPlanet(0);
 
@@ -268,6 +418,9 @@ public partial class Main : Control
 
         planetButton4.Pressed +=
             () => SelectPlanet(3);
+
+        planetButton5.Pressed +=
+            () => SelectPlanet(4);
     }
 
     private Button CreatePlanetButton(
@@ -281,14 +434,39 @@ public partial class Main : Control
             text;
 
         button.Size =
-            new Vector2(190, 210);
+            new Vector2(175, 205);
 
         Style.SetFontSize(
             button,
-            20
+            18
         );
 
         Style.ApplyPlanetNormalStyle(
+            button
+        );
+
+        return button;
+    }
+
+    private Button CreateBossButton(
+        string text
+    )
+    {
+        Button button =
+            new Button();
+
+        button.Text =
+            text;
+
+        button.Size =
+            new Vector2(175, 205);
+
+        Style.SetFontSize(
+            button,
+            18
+        );
+
+        Style.ApplyBossNormalStyle(
             button
         );
 
@@ -308,10 +486,10 @@ public partial class Main : Control
             );
 
         previousDifficultyButton.Position =
-            new Vector2(15, 275);
+            new Vector2(10, 255);
 
         nextDifficultyButton.Position =
-            new Vector2(850, 275);
+            new Vector2(975, 255);
 
         startPanel.AddChild(
             previousDifficultyButton
@@ -339,11 +517,11 @@ public partial class Main : Control
             text;
 
         button.Size =
-            new Vector2(55, 80);
+            new Vector2(50, 75);
 
         Style.SetFontSize(
             button,
-            28
+            25
         );
 
         Style.ApplyPlanetNormalStyle(
@@ -363,14 +541,14 @@ public partial class Main : Control
         );
 
         selectedPlanetLabel.Position =
-            new Vector2(40, 435);
+            new Vector2(40, 415);
 
         selectedPlanetLabel.Size =
-            new Vector2(840, 45);
+            new Vector2(960, 55);
 
         Style.SetFontSize(
             selectedPlanetLabel,
-            22
+            20
         );
 
         startPanel.AddChild(
@@ -384,14 +562,14 @@ public partial class Main : Control
             new Button();
 
         startButton.Position =
-            new Vector2(300, 500);
+            new Vector2(330, 500);
 
         startButton.Size =
-            new Vector2(320, 70);
+            new Vector2(300, 65);
 
         Style.SetFontSize(
             startButton,
-            24
+            22
         );
 
         Style.ApplyStartButtonStyle(
@@ -415,10 +593,10 @@ public partial class Main : Control
             "SAIR";
 
         exitButton.Position =
-            new Vector2(640, 515);
+            new Vector2(665, 505);
 
         exitButton.Size =
-            new Vector2(150, 55);
+            new Vector2(140, 55);
 
         Style.SetFontSize(
             exitButton,
@@ -446,16 +624,6 @@ public partial class Main : Control
             planet >= PlanetCount
         )
         {
-            return;
-        }
-
-        if (!IsPlanetUnlocked(planet))
-        {
-            selectedPlanet =
-                planet;
-
-            UpdatePlanetVisuals();
-
             return;
         }
 
@@ -491,12 +659,12 @@ public partial class Main : Control
             planetButtonsText[3]
         );
 
+        UpdateBossButton();
+
         string status;
 
         if (
-            planetCompleted[
-                selectedPlanet
-            ]
+            planetCompleted[selectedPlanet]
         )
         {
             status =
@@ -505,9 +673,7 @@ public partial class Main : Control
                 $"🔄 Tentativas: {planetAttempts[selectedPlanet]}";
         }
         else if (
-            IsPlanetUnlocked(
-                selectedPlanet
-            )
+            IsPlanetUnlocked(selectedPlanet)
         )
         {
             status =
@@ -535,7 +701,11 @@ public partial class Main : Control
         button.Text =
             originalText;
 
-        if (!IsPlanetUnlocked(planetIndex))
+        if (
+            !IsPlanetUnlocked(
+                planetIndex
+            )
+        )
         {
             button.Text =
                 $"{originalText}\n🔒 BLOQUEADO";
@@ -563,9 +733,7 @@ public partial class Main : Control
             );
         }
         else if (
-            planetCompleted[
-                planetIndex
-            ]
+            planetCompleted[planetIndex]
         )
         {
             button.Text =
@@ -583,9 +751,70 @@ public partial class Main : Control
         }
     }
 
+    private void UpdateBossButton()
+    {
+        planetButton5.Text =
+            planetButtonsText[4];
+
+        if (!IsPlanetUnlocked(4))
+        {
+            planetButton5.Text =
+                $"{planetButtonsText[4]}\n🔒 DERROTE JÚPITER";
+
+            planetButton5.Disabled =
+                true;
+
+            Style.ApplyBossLockedStyle(
+                planetButton5
+            );
+
+            return;
+        }
+
+        planetButton5.Disabled =
+            false;
+
+        if (
+            selectedPlanet == 4
+        )
+        {
+            planetButton5.Text =
+                $"{planetButtonsText[4]}\n⚠ DESAFIO FINAL";
+
+            Style.ApplyBossSelectedStyle(
+                planetButton5
+            );
+
+            return;
+        }
+
+        if (
+            planetCompleted[4]
+        )
+        {
+            planetButton5.Text =
+                $"{planetButtonsText[4]}\n✓ DERROTADO";
+
+            Style.ApplyBossCompletedStyle(
+                planetButton5
+            );
+
+            return;
+        }
+
+        planetButton5.Text =
+            $"{planetButtonsText[4]}\n⚠ DESAFIO FINAL";
+
+        Style.ApplyBossNormalStyle(
+            planetButton5
+        );
+    }
+
     private void UpdatePlanetAvailability()
     {
-        if (planetButton1 == null)
+        if (
+            planetButton1 == null
+        )
         {
             return;
         }
@@ -601,6 +830,9 @@ public partial class Main : Control
 
         planetButton4.Disabled =
             !IsPlanetUnlocked(3);
+
+        planetButton5.Disabled =
+            !IsPlanetUnlocked(4);
     }
 
     private void UpdateStartButton()
@@ -614,9 +846,18 @@ public partial class Main : Control
             startButton.Text =
                 "REFAZER MISSÃO";
 
-            Style.ApplyStartButtonCompletedStyle(
-                startButton
-            );
+            if (selectedPlanet == 4)
+            {
+                Style.ApplyBossStartStyle(
+                    startButton
+                );
+            }
+            else
+            {
+                Style.ApplyStartButtonCompletedStyle(
+                    startButton
+                );
+            }
 
             startButton.Disabled =
                 false;
@@ -631,11 +872,22 @@ public partial class Main : Control
         )
         {
             startButton.Text =
-                "INICIAR MISSÃO";
+                selectedPlanet == 4
+                    ? "ENFRENTAR BOSS"
+                    : "INICIAR MISSÃO";
 
-            Style.ApplyStartButtonStyle(
-                startButton
-            );
+            if (selectedPlanet == 4)
+            {
+                Style.ApplyBossStartStyle(
+                    startButton
+                );
+            }
+            else
+            {
+                Style.ApplyStartButtonStyle(
+                    startButton
+                );
+            }
 
             startButton.Disabled =
                 false;
@@ -644,7 +896,9 @@ public partial class Main : Control
         }
 
         startButton.Text =
-            "🔒 PLANETA BLOQUEADO";
+            selectedPlanet == 4
+                ? "🔒 BOSS BLOQUEADO"
+                : "🔒 PLANETA BLOQUEADO";
 
         Style.ApplyDisabledActionStyle(
             startButton
@@ -735,34 +989,13 @@ public partial class Main : Control
                     new Jupiter()
                 );
                 break;
+
+            case 4:
+                StartPlanet(
+                    new Boss()
+                );
+                break;
         }
-    }
-
-    public void OpenPlanet(
-        int planet
-    )
-    {
-        if (
-            planet < 0 ||
-            planet >= PlanetCount
-        )
-        {
-            return;
-        }
-
-        if (!IsPlanetUnlocked(planet))
-        {
-            return;
-        }
-
-        ReturnToLobby();
-
-        selectedPlanet =
-            planet;
-
-        UpdatePlanetVisuals();
-
-        StartSelectedPlanet();
     }
 
     private void StartPlanet(
@@ -781,6 +1014,37 @@ public partial class Main : Control
             planet,
             GetChildCount() - 1
         );
+    }
+
+    public void OpenPlanet(
+        int planet
+    )
+    {
+        if (
+            planet < 0 ||
+            planet >= PlanetCount
+        )
+        {
+            return;
+        }
+
+        if (
+            !IsPlanetUnlocked(
+                planet
+            )
+        )
+        {
+            return;
+        }
+
+        ReturnToLobby();
+
+        selectedPlanet =
+            planet;
+
+        UpdatePlanetVisuals();
+
+        StartSelectedPlanet();
     }
 
     public void RegisterPlanetCompletion(
@@ -812,13 +1076,13 @@ public partial class Main : Control
             planetScores[planet] =
                 newScore;
         }
-        else if (newScore > oldScore)
+        else if (
+            newScore > oldScore
+        )
         {
             planetScores[planet] =
                 newScore;
         }
-
-        UpdatePlanetVisuals();
     }
 
     public int GetPlanetScore(
@@ -900,7 +1164,8 @@ public partial class Main : Control
                 child is Terra ||
                 child is Lua ||
                 child is Marte ||
-                child is Jupiter
+                child is Jupiter ||
+                child is Boss
             )
             {
                 child.QueueFree();
@@ -926,16 +1191,19 @@ public partial class Main : Control
         switch (selectedPlanet)
         {
             case 0:
-                return new Color("#102D4A");
+                return Style.TerraBackgroundColor;
 
             case 1:
-                return new Color("#24243A");
+                return Style.LuaBackgroundColor;
 
             case 2:
-                return new Color("#451C1C");
+                return Style.MarteBackgroundColor;
 
             case 3:
-                return new Color("#321F4D");
+                return Style.JupiterBackgroundColor;
+
+            case 4:
+                return Style.BossBackgroundColor;
 
             default:
                 return Style.BackgroundColor;
@@ -1002,9 +1270,5 @@ public partial class Main : Control
             AddChild(star);
         }
     }
-
-    public int GetSelectedPlanet()
-    {
-        return selectedPlanet;
-    }
 }
+

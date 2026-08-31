@@ -6,43 +6,81 @@ public abstract partial class EasyPlanet : Control
 {
     protected Random random = new Random();
     protected GameUI ui;
+
     protected int correctAnswer;
     protected int meteorHealth;
     protected int lives;
+
     protected bool questionAnswered;
     protected bool gameOver;
 
     protected int meteorsDestroyed;
-    protected const int MeteorsRequired = 3;
     protected int missionScore;
+
+    protected virtual int MeteorMaxHealth =>
+        GameUI.EasyMeteorMaxHealth;
+
+    protected virtual int DamagePerCorrectAnswer =>
+        GameUI.EasyDamagePerCorrectAnswer;
+
+    protected virtual int MeteorsRequired =>
+        3;
+
+    protected virtual int PointsPerCorrectAnswer =>
+        10;
 
     public abstract int PlanetIndex { get; }
 
     public override void _Ready()
     {
-        ui = new GameUI();
+        ui =
+            new GameUI();
+
         AddChild(ui);
 
-        ui.RestartRequested += RestartGame;
-        ui.ExitRequested += ExitToMenu;
-        ui.DefeatRestartRequested += RestartGame;
-        ui.DefeatExitRequested += ExitToMenu;
-        ui.VictoryNextRequested += GoToNextPlanet;
-        ui.VictoryMenuRequested += ExitToMenu;
+        ui.RestartRequested +=
+            RestartGame;
+
+        ui.ExitRequested +=
+            ExitToMenu;
+
+        ui.DefeatRestartRequested +=
+            RestartGame;
+
+        ui.DefeatExitRequested +=
+            ExitToMenu;
+
+        ui.VictoryNextRequested +=
+            GoToNextPlanet;
+
+        ui.VictoryMenuRequested +=
+            ExitToMenu;
 
         StartGame();
     }
 
     protected virtual void StartGame()
     {
-        lives = GameUI.MaxLives;
-        meteorHealth = GameUI.EasyMeteorMaxHealth;
-        meteorsDestroyed = 0;
-        missionScore = 0;
-        questionAnswered = false;
-        gameOver = false;
+        lives =
+            GameUI.MaxLives;
+
+        meteorHealth =
+            MeteorMaxHealth;
+
+        meteorsDestroyed =
+            0;
+
+        missionScore =
+            0;
+
+        questionAnswered =
+            false;
+
+        gameOver =
+            false;
 
         ui.ResetGameVisuals();
+
         ui.HideVictory();
 
         StartQuestion();
@@ -55,48 +93,73 @@ public abstract partial class EasyPlanet : Control
             return;
         }
 
-        questionAnswered = false;
+        questionAnswered =
+            false;
 
-        ui.MessageLabel.Text = "";
+        ui.MessageLabel.Text =
+            "";
 
-        ui.AnswerButton1.Disabled = false;
-        ui.AnswerButton2.Disabled = false;
-        ui.AnswerButton3.Disabled = false;
+        ui.AnswerButton1.Disabled =
+            false;
+
+        ui.AnswerButton2.Disabled =
+            false;
+
+        ui.AnswerButton3.Disabled =
+            false;
 
         GenerateOperation();
         GenerateAnswers();
 
-        ui.UpdateMeteorHealth(meteorHealth);
-        ui.UpdateLives(lives);
+        ui.UpdateMeteorHealth(
+            meteorHealth,
+            MeteorMaxHealth
+        );
+
+        ui.UpdateLives(
+            lives
+        );
     }
 
     protected abstract void GenerateOperation();
 
     protected virtual void GenerateAnswers()
     {
-        int answer1 = correctAnswer;
+        int answer1 =
+            correctAnswer;
+
         int answer2;
+
         int answer3;
 
         do
         {
-            answer2 = Math.Max(
-                0,
-                correctAnswer + random.Next(-5, 6)
-            );
+            answer2 =
+                Math.Max(
+                    0,
+                    correctAnswer +
+                    random.Next(-5, 6)
+                );
         }
-        while (answer2 == correctAnswer);
+        while (
+            answer2 ==
+            correctAnswer
+        );
 
         do
         {
-            answer3 = Math.Max(
-                0,
-                correctAnswer + random.Next(-7, 8)
-            );
+            answer3 =
+                Math.Max(
+                    0,
+                    correctAnswer +
+                    random.Next(-7, 8)
+                );
         }
         while (
-            answer3 == correctAnswer ||
-            answer3 == answer2
+            answer3 ==
+                correctAnswer ||
+            answer3 ==
+                answer2
         );
 
         int[] answers =
@@ -106,96 +169,164 @@ public abstract partial class EasyPlanet : Control
             answer3
         };
 
-        ShuffleAnswers(answers);
+        ShuffleAnswers(
+            answers
+        );
 
-        ui.AnswerButton1.Text = answers[0].ToString();
-        ui.AnswerButton2.Text = answers[1].ToString();
-        ui.AnswerButton3.Text = answers[2].ToString();
+        ui.AnswerButton1.Text =
+            answers[0].ToString();
+
+        ui.AnswerButton2.Text =
+            answers[1].ToString();
+
+        ui.AnswerButton3.Text =
+            answers[2].ToString();
 
         ConnectAnswerButtons();
     }
 
-    private void ShuffleAnswers(int[] answers)
+    private void ShuffleAnswers(
+        int[] answers
+    )
     {
-        for (int i = answers.Length - 1; i > 0; i--)
+        for (
+            int i =
+                answers.Length - 1;
+            i > 0;
+            i--
+        )
         {
-            int j = random.Next(i + 1);
+            int j =
+                random.Next(
+                    i + 1
+                );
 
-            int temp = answers[i];
-            answers[i] = answers[j];
-            answers[j] = temp;
+            int temp =
+                answers[i];
+
+            answers[i] =
+                answers[j];
+
+            answers[j] =
+                temp;
         }
     }
 
     private void ConnectAnswerButtons()
     {
-        ui.AnswerButton1.Pressed -= Answer1Pressed;
-        ui.AnswerButton2.Pressed -= Answer2Pressed;
-        ui.AnswerButton3.Pressed -= Answer3Pressed;
+        ui.AnswerButton1.Pressed -=
+            Answer1Pressed;
 
-        ui.AnswerButton1.Pressed += Answer1Pressed;
-        ui.AnswerButton2.Pressed += Answer2Pressed;
-        ui.AnswerButton3.Pressed += Answer3Pressed;
+        ui.AnswerButton2.Pressed -=
+            Answer2Pressed;
+
+        ui.AnswerButton3.Pressed -=
+            Answer3Pressed;
+
+        ui.AnswerButton1.Pressed +=
+            Answer1Pressed;
+
+        ui.AnswerButton2.Pressed +=
+            Answer2Pressed;
+
+        ui.AnswerButton3.Pressed +=
+            Answer3Pressed;
     }
 
     private void Answer1Pressed()
     {
-        Shoot(ui.AnswerButton1);
+        Shoot(
+            ui.AnswerButton1
+        );
     }
 
     private void Answer2Pressed()
     {
-        Shoot(ui.AnswerButton2);
+        Shoot(
+            ui.AnswerButton2
+        );
     }
 
     private void Answer3Pressed()
     {
-        Shoot(ui.AnswerButton3);
+        Shoot(
+            ui.AnswerButton3
+        );
     }
 
-    protected async void Shoot(Button button)
+    protected async void Shoot(
+        Button button
+    )
     {
-        if (questionAnswered || gameOver)
+        if (
+            questionAnswered ||
+            gameOver
+        )
         {
             return;
         }
 
-        questionAnswered = true;
+        questionAnswered =
+            true;
 
-        ui.AnswerButton1.Disabled = true;
-        ui.AnswerButton2.Disabled = true;
-        ui.AnswerButton3.Disabled = true;
+        ui.AnswerButton1.Disabled =
+            true;
 
-        int selectedAnswer = int.Parse(button.Text);
+        ui.AnswerButton2.Disabled =
+            true;
 
-        bool correct = selectedAnswer == correctAnswer;
+        ui.AnswerButton3.Disabled =
+            true;
+
+        int selectedAnswer =
+            int.Parse(
+                button.Text
+            );
+
+        bool correct =
+            selectedAnswer ==
+            correctAnswer;
 
         Task buttonAnimation =
-            Transitions.AnimateAnswer(button, correct);
+            Transitions.AnimateAnswer(
+                button,
+                correct
+            );
 
         if (correct)
         {
-            missionScore += 10;
+            missionScore +=
+                PointsPerCorrectAnswer;
 
             meteorHealth -=
-                GameUI.EasyDamagePerCorrectAnswer;
+                DamagePerCorrectAnswer;
 
-            if (meteorHealth < 0)
+            if (
+                meteorHealth < 0
+            )
             {
-                meteorHealth = 0;
+                meteorHealth =
+                    0;
             }
 
-            ui.MessageLabel.Text = "🎯 Acertou!";
+            ui.MessageLabel.Text =
+                "🎯 Acertou!";
 
-            ui.UpdateMeteorHealth(meteorHealth);
+            ui.UpdateMeteorHealth(
+                meteorHealth,
+                MeteorMaxHealth
+            );
         }
         else
         {
             lives--;
 
-            ui.MessageLabel.Text = "💥 Ops!";
+            ui.MessageLabel.Text =
+                "💥 Ops!";
 
-            ui.UpdateLives(lives);
+            ui.UpdateLives(
+                lives
+            );
         }
 
         await buttonAnimation;
@@ -217,24 +348,34 @@ public abstract partial class EasyPlanet : Control
         }
 
         await ToSignal(
-            GetTree().CreateTimer(0.20),
+            GetTree().CreateTimer(
+                0.20
+            ),
             SceneTreeTimer.SignalName.Timeout
         );
 
-        if (lives <= 0)
+        if (
+            lives <= 0
+        )
         {
             Defeat();
             return;
         }
 
-        if (meteorHealth <= 0)
+        if (
+            meteorHealth <= 0
+        )
         {
             meteorsDestroyed++;
 
             ui.MessageLabel.Text =
-                $"💥 Meteoro destruído! {meteorsDestroyed}/{MeteorsRequired}";
+                $"💥 Inimigo derrotado! " +
+                $"{meteorsDestroyed}/{MeteorsRequired}";
 
-            if (meteorsDestroyed >= MeteorsRequired)
+            if (
+                meteorsDestroyed >=
+                MeteorsRequired
+            )
             {
                 await Transitions.MeteorDestroyed(
                     ui.MeteorPanel
@@ -246,7 +387,9 @@ public abstract partial class EasyPlanet : Control
                 }
 
                 await ToSignal(
-                    GetTree().CreateTimer(0.25),
+                    GetTree().CreateTimer(
+                        0.25
+                    ),
                     SceneTreeTimer.SignalName.Timeout
                 );
 
@@ -270,7 +413,9 @@ public abstract partial class EasyPlanet : Control
             }
 
             await ToSignal(
-                GetTree().CreateTimer(0.25),
+                GetTree().CreateTimer(
+                    0.25
+                ),
                 SceneTreeTimer.SignalName.Timeout
             );
 
@@ -280,7 +425,7 @@ public abstract partial class EasyPlanet : Control
             }
 
             meteorHealth =
-                GameUI.EasyMeteorMaxHealth;
+                MeteorMaxHealth;
 
             ui.ResetMeteorVisual();
 
@@ -294,20 +439,34 @@ public abstract partial class EasyPlanet : Control
 
     private void Victory()
     {
-        gameOver = true;
-        questionAnswered = true;
+        gameOver =
+            true;
 
-        ui.AnswerButton1.Disabled = true;
-        ui.AnswerButton2.Disabled = true;
-        ui.AnswerButton3.Disabled = true;
+        questionAnswered =
+            true;
 
-        ui.MessageLabel.Text = "";
+        ui.AnswerButton1.Disabled =
+            true;
 
-        Node current = GetParent();
+        ui.AnswerButton2.Disabled =
+            true;
 
-        while (current != null)
+        ui.AnswerButton3.Disabled =
+            true;
+
+        ui.MessageLabel.Text =
+            "";
+
+        Node current =
+            GetParent();
+
+        while (
+            current != null
+        )
         {
-            if (current is Main main)
+            if (
+                current is Main main
+            )
             {
                 main.RegisterPlanetCompletion(
                     PlanetIndex,
@@ -317,7 +476,8 @@ public abstract partial class EasyPlanet : Control
                 break;
             }
 
-            current = current.GetParent();
+            current =
+                current.GetParent();
         }
 
         ui.ShowVictory(
@@ -328,58 +488,85 @@ public abstract partial class EasyPlanet : Control
 
     private void Defeat()
     {
-        gameOver = true;
-        questionAnswered = true;
+        gameOver =
+            true;
 
-        ui.AnswerButton1.Disabled = true;
-        ui.AnswerButton2.Disabled = true;
-        ui.AnswerButton3.Disabled = true;
+        questionAnswered =
+            true;
 
-        ui.MessageLabel.Text = "";
+        ui.AnswerButton1.Disabled =
+            true;
+
+        ui.AnswerButton2.Disabled =
+            true;
+
+        ui.AnswerButton3.Disabled =
+            true;
+
+        ui.MessageLabel.Text =
+            "";
 
         ui.ShowDefeat();
     }
 
     private void RestartGame()
     {
-        gameOver = false;
-        questionAnswered = false;
+        gameOver =
+            false;
+
+        questionAnswered =
+            false;
 
         StartGame();
     }
 
     private void GoToNextPlanet()
     {
-        Node current = GetParent();
+        Node current =
+            GetParent();
 
-        while (current != null)
+        while (
+            current != null
+        )
         {
-            if (current is Main main)
+            if (
+                current is Main main
+            )
             {
                 main.SelectNextPlanet();
                 return;
             }
 
-            current = current.GetParent();
+            current =
+                current.GetParent();
         }
     }
 
     private void ExitToMenu()
     {
-        gameOver = true;
-        questionAnswered = true;
+        gameOver =
+            true;
 
-        Node current = GetParent();
+        questionAnswered =
+            true;
 
-        while (current != null)
+        Node current =
+            GetParent();
+
+        while (
+            current != null
+        )
         {
-            if (current is Main main)
+            if (
+                current is Main main
+            )
             {
                 main.ReturnToLobby();
                 return;
             }
 
-            current = current.GetParent();
+            current =
+                current.GetParent();
         }
 
         GD.PrintErr(
@@ -387,3 +574,4 @@ public abstract partial class EasyPlanet : Control
         );
     }
 }
+

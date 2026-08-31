@@ -55,27 +55,35 @@ public partial class GameUI : Control
 
     private void CreateTopButtons()
     {
-        RestartButton = CreateActionButton(
-            "REINICIAR",
-            new Vector2(900, 25),
-            new Vector2(135, 45),
-            Style.AnswerButtonColor
+        RestartButton =
+            CreateActionButton(
+                "REINICIAR",
+                new Vector2(900, 25),
+                new Vector2(135, 45),
+                Style.AnswerButtonColor
+            );
+
+        AddChild(
+            RestartButton
         );
 
-        AddChild(RestartButton);
+        RestartButton.Pressed +=
+            OnRestartPressed;
 
-        RestartButton.Pressed += OnRestartPressed;
+        ExitButton =
+            CreateActionButton(
+                "SAIR",
+                new Vector2(1045, 25),
+                new Vector2(110, 45),
+                Style.ExitButtonColor
+            );
 
-        ExitButton = CreateActionButton(
-            "SAIR",
-            new Vector2(1045, 25),
-            new Vector2(110, 45),
-            Style.ExitButtonColor
+        AddChild(
+            ExitButton
         );
 
-        AddChild(ExitButton);
-
-        ExitButton.Pressed += OnExitPressed;
+        ExitButton.Pressed +=
+            OnExitPressed;
     }
 
     private Button CreateActionButton(
@@ -85,11 +93,17 @@ public partial class GameUI : Control
         Color color
     )
     {
-        Button button = new Button();
+        Button button =
+            new Button();
 
-        button.Text = text;
-        button.Position = position;
-        button.Size = size;
+        button.Text =
+            text;
+
+        button.Position =
+            position;
+
+        button.Size =
+            size;
 
         Style.SetFontSize(
             button,
@@ -109,7 +123,8 @@ public partial class GameUI : Control
 
     private void CreateLives()
     {
-        LivesLabel = new Label();
+        LivesLabel =
+            new Label();
 
         LivesLabel.Text =
             "VIDAS: ❤️ ❤️ ❤️";
@@ -125,7 +140,9 @@ public partial class GameUI : Control
             22
         );
 
-        AddChild(LivesLabel);
+        AddChild(
+            LivesLabel
+        );
     }
 
     private void CreateQuestionPanel()
@@ -143,7 +160,9 @@ public partial class GameUI : Control
             questionPanel
         );
 
-        AddChild(questionPanel);
+        AddChild(
+            questionPanel
+        );
 
         OperationLabel =
             new Label();
@@ -181,7 +200,9 @@ public partial class GameUI : Control
             MeteorPanel
         );
 
-        AddChild(MeteorPanel);
+        AddChild(
+            MeteorPanel
+        );
 
         Label meteor =
             new Label();
@@ -251,9 +272,17 @@ public partial class GameUI : Control
         AnswerButton3.Position =
             new Vector2(835, 505);
 
-        AddChild(AnswerButton1);
-        AddChild(AnswerButton2);
-        AddChild(AnswerButton3);
+        AddChild(
+            AnswerButton1
+        );
+
+        AddChild(
+            AnswerButton2
+        );
+
+        AddChild(
+            AnswerButton3
+        );
     }
 
     private Button CreateAnswerButton()
@@ -295,7 +324,9 @@ public partial class GameUI : Control
             23
         );
 
-        AddChild(MessageLabel);
+        AddChild(
+            MessageLabel
+        );
     }
 
     private void CreateDefeatPanel()
@@ -313,7 +344,9 @@ public partial class GameUI : Control
             defeatPanel
         );
 
-        AddChild(defeatPanel);
+        AddChild(
+            defeatPanel
+        );
 
         Label title =
             new Label();
@@ -343,7 +376,8 @@ public partial class GameUI : Control
             new Label();
 
         message.Text =
-            "Você ficou sem vidas!\nTente novamente para continuar sua missão.";
+            "Você ficou sem vidas!\n" +
+            "Tente novamente para continuar sua missão.";
 
         Style.CenterLabel(
             message
@@ -392,7 +426,8 @@ public partial class GameUI : Control
         defeatExitButton.Pressed +=
             OnDefeatExitPressed;
 
-        defeatPanel.Visible = false;
+        defeatPanel.Visible =
+            false;
     }
 
     private void CreateVictoryPanel()
@@ -410,7 +445,9 @@ public partial class GameUI : Control
             victoryPanel
         );
 
-        AddChild(victoryPanel);
+        AddChild(
+            victoryPanel
+        );
 
         Label title =
             new Label();
@@ -486,7 +523,8 @@ public partial class GameUI : Control
         victoryMenuButton.Pressed +=
             OnVictoryMenuPressed;
 
-        victoryPanel.Visible = false;
+        victoryPanel.Visible =
+            false;
     }
 
     private Button CreateDefeatButton(
@@ -555,31 +593,49 @@ public partial class GameUI : Control
 
     public void ShowDefeat()
     {
-        defeatPanel.Visible = true;
+        defeatPanel.Visible =
+            true;
 
         MoveChild(
             defeatPanel,
             GetChildCount() - 1
         );
 
-        AnswerButton1.Disabled = true;
-        AnswerButton2.Disabled = true;
-        AnswerButton3.Disabled = true;
+        AnswerButton1.Disabled =
+            true;
 
-        RestartButton.Disabled = true;
-        ExitButton.Disabled = true;
+        AnswerButton2.Disabled =
+            true;
+
+        AnswerButton3.Disabled =
+            true;
+
+        RestartButton.Disabled =
+            true;
+
+        ExitButton.Disabled =
+            true;
     }
 
     public void HideDefeat()
     {
-        defeatPanel.Visible = false;
+        defeatPanel.Visible =
+            false;
 
-        AnswerButton1.Disabled = false;
-        AnswerButton2.Disabled = false;
-        AnswerButton3.Disabled = false;
+        AnswerButton1.Disabled =
+            false;
 
-        RestartButton.Disabled = false;
-        ExitButton.Disabled = false;
+        AnswerButton2.Disabled =
+            false;
+
+        AnswerButton3.Disabled =
+            false;
+
+        RestartButton.Disabled =
+            false;
+
+        ExitButton.Disabled =
+            false;
     }
 
     public void ShowVictory(
@@ -587,7 +643,8 @@ public partial class GameUI : Control
         int score
     )
     {
-        victoryPanel.Visible = true;
+        victoryPanel.Visible =
+            true;
 
         MoveChild(
             victoryPanel,
@@ -597,20 +654,29 @@ public partial class GameUI : Control
         victoryPanel
             .GetChild<Label>(1)
             .Text =
-            $"Você destruiu {meteorsDestroyed} meteoros!\n\n" +
+            $"Você derrotou {meteorsDestroyed} inimigos!\n\n" +
             $"⭐ Pontuação da missão: {score}";
 
-        AnswerButton1.Disabled = true;
-        AnswerButton2.Disabled = true;
-        AnswerButton3.Disabled = true;
+        AnswerButton1.Disabled =
+            true;
 
-        RestartButton.Disabled = true;
-        ExitButton.Disabled = true;
+        AnswerButton2.Disabled =
+            true;
+
+        AnswerButton3.Disabled =
+            true;
+
+        RestartButton.Disabled =
+            true;
+
+        ExitButton.Disabled =
+            true;
     }
 
     public void HideVictory()
     {
-        victoryPanel.Visible = false;
+        victoryPanel.Visible =
+            false;
     }
 
     public void UpdateLives(
@@ -624,7 +690,8 @@ public partial class GameUI : Control
                 MaxLives
             );
 
-        string hearts = "";
+        string hearts =
+            "";
 
         for (
             int i = 0;
@@ -632,7 +699,8 @@ public partial class GameUI : Control
             i++
         )
         {
-            hearts += "❤️ ";
+            hearts +=
+                "❤️ ";
         }
 
         for (
@@ -641,7 +709,8 @@ public partial class GameUI : Control
             i++
         )
         {
-            hearts += "🖤 ";
+            hearts +=
+                "🖤 ";
         }
 
         LivesLabel.Text =
@@ -649,23 +718,25 @@ public partial class GameUI : Control
     }
 
     public void UpdateMeteorHealth(
-        int health
+        int health,
+        int maxHealth
     )
     {
         health =
             Mathf.Clamp(
                 health,
                 0,
-                EasyMeteorMaxHealth
+                maxHealth
             );
 
         MeteorHealthLabel.Text =
-            $"❤️ {health} / {EasyMeteorMaxHealth}";
+            $"❤️ {health} / {maxHealth}";
     }
 
     public void ResetMeteorVisual()
     {
-        MeteorPanel.Visible = true;
+        MeteorPanel.Visible =
+            true;
 
         MeteorPanel.Scale =
             Vector2.One;
@@ -681,15 +752,19 @@ public partial class GameUI : Control
         );
 
         UpdateMeteorHealth(
+            EasyMeteorMaxHealth,
             EasyMeteorMaxHealth
         );
 
-        MessageLabel.Text = "";
+        MessageLabel.Text =
+            "";
 
         HideDefeat();
+
         HideVictory();
 
-        MeteorPanel.Visible = true;
+        MeteorPanel.Visible =
+            true;
 
         MeteorPanel.Scale =
             Vector2.One;
@@ -725,3 +800,4 @@ public partial class GameUI : Control
             new Vector2(835, 505);
     }
 }
+

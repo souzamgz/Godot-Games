@@ -56,7 +56,59 @@ public static class Style
     public static readonly Color DisabledButtonBorderColor =
         new Color("#444B69");
 
-    // Estilos da tela de jogo
+    public static readonly Color TerraBackgroundColor =
+        new Color("#102D4A");
+
+    public static readonly Color LuaBackgroundColor =
+        new Color("#24243A");
+
+    public static readonly Color MarteBackgroundColor =
+        new Color("#451C1C");
+
+    public static readonly Color JupiterBackgroundColor =
+        new Color("#321F4D");
+
+    public static readonly Color BossBackgroundColor =
+        new Color("#190D2E");
+
+    public static readonly Color BossPanelColor =
+        new Color("#24103F");
+
+    public static readonly Color BossPanelBorderColor =
+        new Color("#C75CFF");
+
+    public static readonly Color BossButtonColor =
+        new Color("#54217A");
+
+    public static readonly Color BossButtonBorderColor =
+        new Color("#D66BFF");
+
+    public static readonly Color BossButtonHoverColor =
+        new Color("#7434A0");
+
+    public static readonly Color BossSelectedColor =
+        new Color("#792BA6");
+
+    public static readonly Color BossSelectedBorderColor =
+        new Color("#F0B5FF");
+
+    public static readonly Color BossCompletedColor =
+        new Color("#3C2254");
+
+    public static readonly Color BossCompletedBorderColor =
+        new Color("#C56BFF");
+
+    public static readonly Color BossLockedColor =
+        new Color("#160C25");
+
+    public static readonly Color BossLockedBorderColor =
+        new Color("#593866");
+
+    public static readonly Color BossStartColor =
+        new Color("#792BA6");
+
+    public static readonly Color BossStartBorderColor =
+        new Color("#E09AFF");
 
     public static readonly Color GameQuestionPanelColor =
         new Color("#151F4A");
@@ -87,6 +139,18 @@ public static class Style
 
     public static readonly Color VictoryPanelBorderColor =
         new Color("#5BC7A6");
+
+    public static readonly Color IntroPanelColor =
+        new Color("#111C42");
+
+    public static readonly Color IntroPanelBorderColor =
+        new Color("#6D82EA");
+
+    public static readonly Color IntroStartColor =
+        new Color("#3155A6");
+
+    public static readonly Color IntroStartBorderColor =
+        new Color("#9CB0FF");
 
     public static StyleBoxFlat CreateBox(
         Color backgroundColor,
@@ -207,80 +271,6 @@ public static class Style
             theme;
     }
 
-    public static void ApplyActionButton(
-        Button button,
-        Color backgroundColor,
-        Color borderColor
-    )
-    {
-        if (button == null)
-        {
-            return;
-        }
-
-        StyleBoxFlat normal =
-            CreateBox(
-                backgroundColor,
-                borderColor,
-                3,
-                15
-            );
-
-        StyleBoxFlat hover =
-            CreateBox(
-                backgroundColor.Lightened(0.15f),
-                borderColor.Lightened(0.15f),
-                4,
-                15
-            );
-
-        StyleBoxFlat pressed =
-            CreateBox(
-                backgroundColor.Darkened(0.10f),
-                borderColor,
-                4,
-                15
-            );
-
-        StyleBoxFlat disabled =
-            CreateBox(
-                backgroundColor.Darkened(0.20f),
-                borderColor.Darkened(0.20f),
-                3,
-                15
-            );
-
-        Theme theme =
-            new Theme();
-
-        theme.SetStylebox(
-            "normal",
-            "Button",
-            normal
-        );
-
-        theme.SetStylebox(
-            "hover",
-            "Button",
-            hover
-        );
-
-        theme.SetStylebox(
-            "pressed",
-            "Button",
-            pressed
-        );
-
-        theme.SetStylebox(
-            "disabled",
-            "Button",
-            disabled
-        );
-
-        button.Theme =
-            theme;
-    }
-
     public static void ApplyPanelStyle(
         Panel panel,
         Color backgroundColor,
@@ -311,6 +301,17 @@ public static class Style
 
         panel.Theme =
             theme;
+    }
+
+    public static void ApplyIntroPanelStyle(
+        Panel panel
+    )
+    {
+        ApplyPanelStyle(
+            panel,
+            IntroPanelColor,
+            IntroPanelBorderColor
+        );
     }
 
     public static void ApplyPlanetNormalStyle(
@@ -417,7 +418,83 @@ public static class Style
         );
     }
 
-    // Estilos específicos do GameUI
+    public static void ApplyIntroStartButtonStyle(
+        Button button
+    )
+    {
+        ApplyButtonStyle(
+            button,
+            IntroStartColor,
+            IntroStartBorderColor,
+            IntroStartColor.Lightened(0.15f),
+            4
+        );
+    }
+
+    public static void ApplyBossNormalStyle(
+        Button button
+    )
+    {
+        ApplyButtonStyle(
+            button,
+            BossButtonColor,
+            BossButtonBorderColor,
+            BossButtonHoverColor,
+            4
+        );
+    }
+
+    public static void ApplyBossSelectedStyle(
+        Button button
+    )
+    {
+        ApplyButtonStyle(
+            button,
+            BossSelectedColor,
+            BossSelectedBorderColor,
+            BossSelectedColor.Lightened(0.15f),
+            6
+        );
+    }
+
+    public static void ApplyBossCompletedStyle(
+        Button button
+    )
+    {
+        ApplyButtonStyle(
+            button,
+            BossCompletedColor,
+            BossCompletedBorderColor,
+            BossCompletedColor.Lightened(0.15f),
+            4
+        );
+    }
+
+    public static void ApplyBossLockedStyle(
+        Button button
+    )
+    {
+        ApplyButtonStyle(
+            button,
+            BossLockedColor,
+            BossLockedBorderColor,
+            BossLockedColor,
+            3
+        );
+    }
+
+    public static void ApplyBossStartStyle(
+        Button button
+    )
+    {
+        ApplyButtonStyle(
+            button,
+            BossStartColor,
+            BossStartBorderColor,
+            BossStartColor.Lightened(0.15f),
+            5
+        );
+    }
 
     public static void ApplyGameActionButtonStyle(
         Button button
@@ -506,7 +583,9 @@ public static class Style
         Button button
     )
     {
-        ApplyExitButtonStyle(button);
+        ApplyExitButtonStyle(
+            button
+        );
     }
 
     public static void ApplyVictoryNextStyle(
@@ -567,3 +646,4 @@ public static class Style
             VerticalAlignment.Center;
     }
 }
+
