@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 
 public abstract partial class EasyPlanet : Control
 {
-    protected Random random = new Random();
+    protected Random random =
+        new Random();
+
     protected GameUI ui;
 
     protected int correctAnswer;
@@ -17,19 +19,18 @@ public abstract partial class EasyPlanet : Control
     protected int meteorsDestroyed;
     protected int missionScore;
 
-    protected virtual int MeteorMaxHealth =>
-        GameUI.EasyMeteorMaxHealth;
-
-    protected virtual int DamagePerCorrectAnswer =>
-        GameUI.EasyDamagePerCorrectAnswer;
-
-    protected virtual int MeteorsRequired =>
-        3;
-
-    protected virtual int PointsPerCorrectAnswer =>
-        10;
+    protected const int MeteorsRequired = 3;
 
     public abstract int PlanetIndex { get; }
+
+    protected virtual bool IsBoss =>
+        false;
+
+    protected virtual int MaxMeteorHealth =>
+        GameUI.EasyMeteorMaxHealth;
+
+    protected virtual int RequiredMeteors =>
+        MeteorsRequired;
 
     public override void _Ready()
     {
@@ -65,7 +66,7 @@ public abstract partial class EasyPlanet : Control
             GameUI.MaxLives;
 
         meteorHealth =
-            MeteorMaxHealth;
+            MaxMeteorHealth;
 
         meteorsDestroyed =
             0;
@@ -79,7 +80,10 @@ public abstract partial class EasyPlanet : Control
         gameOver =
             false;
 
-        ui.ResetGameVisuals();
+        ui.ResetGameVisuals(
+            MaxMeteorHealth,
+            IsBoss
+        );
 
         ui.HideVictory();
 
@@ -109,11 +113,12 @@ public abstract partial class EasyPlanet : Control
             false;
 
         GenerateOperation();
+
         GenerateAnswers();
 
         ui.UpdateMeteorHealth(
             meteorHealth,
-            MeteorMaxHealth
+            MaxMeteorHealth
         );
 
         ui.UpdateLives(
@@ -156,10 +161,8 @@ public abstract partial class EasyPlanet : Control
                 );
         }
         while (
-            answer3 ==
-                correctAnswer ||
-            answer3 ==
-                answer2
+            answer3 == correctAnswer ||
+            answer3 == answer2
         );
 
         int[] answers =
@@ -190,16 +193,13 @@ public abstract partial class EasyPlanet : Control
     )
     {
         for (
-            int i =
-                answers.Length - 1;
+            int i = answers.Length - 1;
             i > 0;
             i--
         )
         {
             int j =
-                random.Next(
-                    i + 1
-                );
+                random.Next(i + 1);
 
             int temp =
                 answers[i];
@@ -296,25 +296,25 @@ public abstract partial class EasyPlanet : Control
         if (correct)
         {
             missionScore +=
-                PointsPerCorrectAnswer;
+                10;
 
             meteorHealth -=
-                DamagePerCorrectAnswer;
+                GameUI.EasyDamagePerCorrectAnswer;
 
-            if (
-                meteorHealth < 0
-            )
-            {
-                meteorHealth =
-                    0;
-            }
+            meteorHealth =
+                Mathf.Max(
+                    meteorHealth,
+                    0
+                );
 
             ui.MessageLabel.Text =
-                "🎯 Acertou!";
+                IsBoss
+                    ? "Acertou! O chefe sofreu dano!"
+                    : "Acertou!";
 
             ui.UpdateMeteorHealth(
                 meteorHealth,
-                MeteorMaxHealth
+                MaxMeteorHealth
             );
         }
         else
@@ -354,27 +354,55 @@ public abstract partial class EasyPlanet : Control
             SceneTreeTimer.SignalName.Timeout
         );
 
-        if (
-            lives <= 0
-        )
+        if (lives <= 0)
         {
             Defeat();
+
             return;
         }
 
-        if (
-            meteorHealth <= 0
-        )
+        if (meteorHealth <= 0)
         {
             meteorsDestroyed++;
 
+            if (IsBoss)
+            {
+                ui.MessageLabel.Text =
+                    "💥 CHEFE DERROTADO!";
+
+                await Transitions.MeteorDestroyed(
+                    ui.MeteorPanel
+                );
+
+                if (gameOver)
+                {
+                    return;
+                }
+
+                await ToSignal(
+                    GetTree().CreateTimer(
+                        0.30
+                    ),
+                    SceneTreeTimer.SignalName.Timeout
+                );
+
+                if (gameOver)
+                {
+                    return;
+                }
+
+                Victory();
+
+                return;
+            }
+
             ui.MessageLabel.Text =
-                $"💥 Inimigo derrotado! " +
-                $"{meteorsDestroyed}/{MeteorsRequired}";
+                $"💥 Meteoro destruído! " +
+                $"{meteorsDestroyed}/{RequiredMeteors}";
 
             if (
                 meteorsDestroyed >=
-                MeteorsRequired
+                RequiredMeteors
             )
             {
                 await Transitions.MeteorDestroyed(
@@ -425,7 +453,7 @@ public abstract partial class EasyPlanet : Control
             }
 
             meteorHealth =
-                MeteorMaxHealth;
+                MaxMeteorHealth;
 
             ui.ResetMeteorVisual();
 
@@ -534,6 +562,7 @@ public abstract partial class EasyPlanet : Control
             )
             {
                 main.SelectNextPlanet();
+
                 return;
             }
 
@@ -562,6 +591,7 @@ public abstract partial class EasyPlanet : Control
             )
             {
                 main.ReturnToLobby();
+
                 return;
             }
 
@@ -574,4 +604,3 @@ public abstract partial class EasyPlanet : Control
         );
     }
 }
-
